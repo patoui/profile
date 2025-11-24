@@ -1,0 +1,23 @@
+<%- include('../partials/header', { title: 'Videos', currentPath: '/video' }) %>
+
+<h1 class="text-4xl mb-4">Videos</h1>
+<% if (videos.length === 0) { %>
+<div class="mb-6 w-full">
+    <p>No videos yet :(</p>
+</div>
+<% } else { %>
+    <% videos.forEach(function(video) { %>
+    <div class="mb-6 w-full">
+        <a href="/video/<%= video.slug %>" class="mb-2 no-underline font-semibold text-black text-xl hover:underline block"><%= video.title %></a>
+        <p class="mb-2 text-sm text-gray-700"><%= video.description || 'No description available.' %></p>
+        <p class="mb-2 text-sm text-gray-600">Published on <%= video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '' %></p>
+        <div>
+            <% video.tagNames.forEach(function(tag) { %>
+            <a href="/video?tag=<%= encodeURIComponent(tag) %>" class="inline-block bg-gray-100 rounded-full px-3 py-1 text-xs text-gray-600 mr-2 hover:text-black hover:underline">#<%= tag %></a>
+            <% }); %>
+        </div>
+    </div>
+    <% }); %>
+<% } %>
+
+<%- include('../partials/footer') %>

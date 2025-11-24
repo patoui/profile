@@ -1,0 +1,17 @@
+<%- include('../partials/header', { title: 'Tips & Tricks', currentPath: '/tip' }) %>
+
+<h1 class="text-4xl mb-4">Tips &amp; Tricks</h1>
+<% tips.forEach(function(tip) { %>
+<div class="mb-6 w-full">
+    <a href="/tip/<%= tip.slug %>" class="mb-2 no-underline font-semibold text-black text-xl hover:underline block"><%= tip.title %></a>
+    <p class="mb-2 text-sm text-gray-700"><%= tip.shortBody %></p>
+    <p class="mb-2 text-sm text-gray-600">Published on <%= tip.publishedAt ? new Date(tip.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '' %></p>
+    <div>
+        <% tip.tagNames.forEach(function(tag) { %>
+        <a href="/tip?tag=<%= encodeURIComponent(tag) %>" class="inline-block bg-gray-100 rounded-full px-3 py-1 text-xs text-gray-600 mr-2 hover:text-black hover:underline">#<%= tag %></a>
+        <% }); %>
+    </div>
+</div>
+<% }); %>
+
+<%- include('../partials/footer') %>

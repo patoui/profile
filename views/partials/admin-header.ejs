@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Patrique Ouimet">
+    <%- typeof meta !== 'undefined' ? meta : '' %>
+
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+
+    <title><%= typeof title !== 'undefined' && title ? title : '' %> | <%= typeof appName !== 'undefined' && appName ? appName : 'Profile' %></title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <%- typeof css !== 'undefined' ? css : '' %>
+</head>
+<body>
+    <!-- Header -->
+    <div class="flex mt-3 mb-3 mr-5 ml-5 items-center">
+        <div class="flex w-5/6">
+            <div class="mt-1 mr-2">
+                <img src="/img/black-white-profile.png" alt="Grayscale profile picture" class="rounded-full w-12 m-auto mb-3" />
+            </div>
+            <div>
+                <p class="block text-2xl">Patrique Ouimet</p>
+                <p class="block text-xs italic">Senior Backend Software Engineer</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="mb-4">
+        <div class="flex justify-center w-full px-8 mx-auto">
+            <ul class="w-full p-3 list-reset flex border-solid border-b border-t border-gray-300">
+                <li class="w-1/4 text-center">
+                    <a class="<%= typeof currentPath !== 'undefined' && currentPath === '/' ? 'text-black' : 'text-blue-600' %> font-semibold no-underline hover:text-black" href="/">About</a>
+                </li>
+                <li class="w-1/4 text-center">
+                    <a class="<%= typeof currentPath !== 'undefined' && currentPath === '/blog' ? 'text-black' : 'text-blue-600' %> font-semibold no-underline hover:text-black" href="/blog">Blog</a>
+                </li>
+                <li class="w-1/4 text-center">
+                    <a class="<%= typeof currentPath !== 'undefined' && currentPath === '/tip' ? 'text-black' : 'text-blue-600' %> font-semibold no-underline hover:text-black" href="/tip">Tips</a>
+                </li>
+                <li class="w-1/4 text-center">
+                    <a class="<%= typeof currentPath !== 'undefined' && currentPath === '/video' ? 'text-black' : 'text-blue-600' %> font-semibold no-underline hover:text-black" href="/video">Videos</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <%- include('flash') %>

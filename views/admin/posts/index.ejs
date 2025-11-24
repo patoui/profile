@@ -1,0 +1,64 @@
+<%- include('../../partials/admin-header', { title: 'Manage Posts', currentPath: '' }) %>
+
+<div class="w-full px-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Manage Posts</h1>
+        <a href="/admin/post/create" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            New Post
+        </a>
+    </div>
+
+    <% if (posts.length === 0) { %>
+        <p class="text-gray-600">No posts yet.</p>
+    <% } else { %>
+        <div class="bg-white rounded-lg shadow-md overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <% posts.forEach(function(post) { %>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900"><%= post.title %></div>
+                            <div class="text-sm text-gray-500"><%= post.slug %></div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <% if (post.publishedAt) { %>
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Published</span>
+                            <% } else { %>
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Draft</span>
+                            <% } %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex flex-wrap gap-1">
+                                <% post.tagNames.forEach(function(tag) { %>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded"><%= tag %></span>
+                                <% }); %>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex flex-col space-y-1">
+                                <a href="/admin/post/<%= post.id %>/edit" class="text-blue-600 hover:text-blue-900">Edit</a>
+                                <a href="/admin/post/<%= post.id %>/publish" class="text-green-600 hover:text-green-900">
+                                    <%= post.publishedAt ? 'Unpublish' : 'Publish' %>
+                                </a>
+                                <form action="/admin/post/<%= post.id %>/delete" method="POST" onsubmit="return confirm('Are you sure?')">
+                                    <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../../partials/admin-footer') %>
