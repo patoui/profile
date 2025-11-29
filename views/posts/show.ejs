@@ -10,7 +10,7 @@
     slug: post.slug
 }) %>
 
-<%- include('../partials/header-post-meta', { title: post.title, currentPath: '/blog', css: '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">' }) %>
+<%- include('../partials/header-post-meta', { title: post.title, currentPath: '/blog', css: '<link rel="stylesheet" href="/dist/highlight.css">' }) %>
 
 <%- include('../partials/article-header', { title: post.title, publishedAt: post.publishedAt }) %>
 
