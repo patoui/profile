@@ -1,0 +1,14 @@
+<% if (previous || next) { %>
+<div class="flex w-full mt-4 mb-4">
+    <div class="w-1/2">
+        <% if (previous) { %>
+            <a class="underline" href="/<%= urlPath %>/<%= previous.slug %>">&#8678; <%= truncate && previous.title.length > 30 ? previous.title.substring(0, 30) + '...' : previous.title %></a>
+        <% } %>
+    </div>
+    <div class="w-1/2 text-right">
+        <% if (next) { %>
+            <a class="underline" href="/<%= urlPath %>/<%= next.slug %>"><%= truncate && next.title.length > 30 ? next.title.substring(0, 30) + '...' : next.title %> &#8680;</a>
+        <% } %>
+    </div>
+</div>
+<% } %>

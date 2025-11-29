@@ -19,6 +19,9 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(rootDir, 'views'));
 
+// Make baseUrl available to all views
+app.locals.baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

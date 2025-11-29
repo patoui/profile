@@ -65,6 +65,7 @@ export class PostController {
       post: {
         ...post,
         bodyHtml: parseMarkdown(post.body),
+        shortBody: getShortBody(post.body),
         tagNames: parseTags(post.tags),
       },
       previousPost,

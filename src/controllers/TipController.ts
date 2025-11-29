@@ -65,6 +65,7 @@ export class TipController {
       tip: {
         ...tip,
         bodyHtml: parseMarkdown(tip.body),
+        shortBody: getShortBody(tip.body),
         tagNames: parseTags(tip.tags),
       },
       previousTip,

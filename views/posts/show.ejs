@@ -1,1 +1,23 @@
-<%- include('../partials/content-show', { item: post, previousItem: previousPost, nextItem: nextPost, basePath: '/post', currentPath: '/blog' }) %>
+<%- include('../partials/header-pre-meta', { title: post.title, currentPath: '/blog' }) %>
+
+<%- include('../partials/article-meta', {
+    title: post.title,
+    description: post.shortBody,
+    type: 'article',
+    publishedAt: post.publishedAt,
+    tagNames: post.tagNames,
+    urlPath: 'post',
+    slug: post.slug
+}) %>
+
+<%- include('../partials/header-post-meta', { title: post.title, currentPath: '/blog', css: '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">' }) %>
+
+<%- include('../partials/article-header', { title: post.title, publishedAt: post.publishedAt }) %>
+
+<div class="w-full pt-4 pb-4 markdown-body"><%- post.bodyHtml %></div>
+
+<%- include('../partials/article-navigation', { previous: previousPost, next: nextPost, urlPath: 'post', truncate: true }) %>
+
+<%- include('../partials/highlight') %>
+
+<%- include('../partials/footer') %>

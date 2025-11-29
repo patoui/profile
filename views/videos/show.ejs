@@ -1,25 +1,24 @@
-<%- include('../partials/header', { title: video.title, currentPath: '/video' }) %>
+<%- include('../partials/header-pre-meta', { title: video.title, currentPath: '/video' }) %>
 
-<h1 class="w-full text-4xl text-center font-bold"><%= video.title %></h1>
-<p class="w-full text-sm text-center text-gray-600"><%= video.publishedAt ? new Date(video.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '' %></p>
+<%- include('../partials/article-meta', {
+    title: video.title,
+    description: video.shortDescription,
+    type: 'video.other',
+    publishedAt: video.publishedAt,
+    tagNames: video.tagNames,
+    urlPath: 'video',
+    slug: video.slug,
+    videoUrl: video.embedUrl
+}) %>
+
+<%- include('../partials/header-post-meta', { title: video.title, currentPath: '/video' }) %>
+
+<%- include('../partials/article-header', { title: video.title, publishedAt: video.publishedAt }) %>
 
 <div class="block relative" style="max-width:600px; max-height:338px; width:90vw; height:50.85vw; margin: 1rem auto;">
     <iframe style="position:absolute; top:0; left:0; width:100%; height:100%; border: none;" src="<%= video.embedUrl %>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
-<% if (previousVideo || nextVideo) { %>
-<div class="flex w-full mt-4 mb-4">
-    <div class="w-1/2">
-        <% if (previousVideo) { %>
-            <a class="underline" href="/video/<%= previousVideo.slug %>">&#8678; <%= previousVideo.title %></a>
-        <% } %>
-    </div>
-    <div class="w-1/2 text-right">
-        <% if (nextVideo) { %>
-            <a class="underline" href="/video/<%= nextVideo.slug %>"><%= nextVideo.title %> &#8680;</a>
-        <% } %>
-    </div>
-</div>
-<% } %>
+<%- include('../partials/article-navigation', { previous: previousVideo, next: nextVideo, urlPath: 'video', truncate: false }) %>
 
 <%- include('../partials/footer') %>

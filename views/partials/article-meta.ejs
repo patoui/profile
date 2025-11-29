@@ -1,0 +1,14 @@
+<meta name="description" content="<%= description %>" />
+<meta property="og:type" content="<%= type %>" />
+<meta property="og:title" content="<%= title %>" />
+<meta property="og:description" content="<%= description %>" />
+<meta property="og:image" content="<%= baseUrl %>/img/black-white-profile.png" />
+<meta property="article:author" content="Patrique Ouimet" />
+<meta property="article:published_time" content="<%= publishedAt ? new Date(publishedAt).toISOString() : '' %>" />
+<% tagNames.forEach(tag => { %>
+    <meta property="article:tag" content="<%= tag %>" />
+<% }); %>
+<meta property="og:url" content="<%= baseUrl %>/<%= urlPath %>/<%= slug %>" />
+<% if (typeof videoUrl !== 'undefined') { %>
+<meta property="og:video" content="<%= videoUrl %>" />
+<% } %>

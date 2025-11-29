@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { videoRepository, analyticRepository } from '../repositories/index.js';
-import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from '../utils/helpers.js';
+import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl, getShortBody } from '../utils/helpers.js';
 import { Video } from '../../generated/prisma/client.js';
 
 function parseTags(tagsJson: string): string[] {
@@ -64,6 +64,7 @@ export class VideoController {
       video: {
         ...video,
         embedUrl: getYouTubeEmbedUrl(video.externalId),
+        shortDescription: getShortBody(video.description),
         tagNames: parseTags(video.tags),
       },
       previousVideo,

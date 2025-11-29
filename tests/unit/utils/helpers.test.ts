@@ -165,20 +165,91 @@ describe('stripHtml', () => {
 });
 
 describe('getShortBody', () => {
-  it('parses markdown and truncates', () => {
+  it('parses markdown and truncates at word boundary', () => {
     const markdown = '**Bold text** and more content here that is longer';
     const result = getShortBody(markdown, 20);
     expect(result).not.toContain('<strong>');
+    expect(result).toContain('...');
     expect(result.length).toBeLessThanOrEqual(23);
   });
 
-  it('uses default length of 200', () => {
+  it('uses default length of 100', () => {
     const longMarkdown = 'a'.repeat(300);
     const result = getShortBody(longMarkdown);
-    expect(result.length).toBe(203);
+    // Should truncate to 100 chars + "..." = 103
+    expect(result.length).toBe(103);
+    expect(result.endsWith('...')).toBe(true);
   });
 
   it('handles empty markdown', () => {
     expect(getShortBody('')).toBe('');
+  });
+
+  it('removes URLs completely', () => {
+    const text = 'Introduction to Redis Streams https://redis.io/docs/manual/data-types/streams and more content';
+    const result = getShortBody(text, 50);
+    expect(result).not.toContain('https://');
+    expect(result).not.toContain('redis.io');
+    expect(result).toContain('to Redis Streams');
+  });
+
+  it('removes markdown links but keeps text', () => {
+    const text = 'Check out [this guide](https://example.com) for more info';
+    const result = getShortBody(text, 100);
+    expect(result).toContain('this guide');
+    expect(result).not.toContain('https://');
+    expect(result).not.toContain('[');
+    expect(result).not.toContain(']');
+  });
+
+  it('does not truncate if text is shorter than length', () => {
+    const text = 'Short text';
+    const result = getShortBody(text, 100);
+    expect(result).toBe('Short text');
+    expect(result).not.toContain('...');
+  });
+
+  it('truncates at word boundary and adds ellipsis', () => {
+    const text = 'This is a test sentence with multiple words that exceeds length';
+    const result = getShortBody(text, 20);
+    expect(result.endsWith('...')).toBe(true);
+    // Should not end with partial word before the ellipsis
+    const withoutEllipsis = result.replace('...', '');
+    expect(withoutEllipsis.endsWith(' ')).toBe(false);
+  });
+
+  it('removes markdown symbols like headings, backticks, bold, italic', () => {
+    const text = "## Introduction In this short article we'll take a look at the difference between `new self` and `new static`";
+    const result = getShortBody(text, 150);
+    expect(result).not.toContain('##');
+    expect(result).not.toContain('`');
+    expect(result).not.toContain('Introduction');
+    expect(result).toContain('new self');
+    expect(result).toContain('new static');
+  });
+
+  it('removes all common markdown formatting', () => {
+    const text = '## Heading with **bold** and *italic* and ~~strikethrough~~ text';
+    const result = getShortBody(text, 100);
+    expect(result).not.toContain('##');
+    expect(result).not.toContain('**');
+    expect(result).not.toContain('*');
+    expect(result).not.toContain('~~');
+    expect(result).toContain('bold');
+    expect(result).toContain('italic');
+    expect(result).toContain('strikethrough');
+  });
+
+  it('removes "Introduction" from the beginning (case-insensitive)', () => {
+    expect(getShortBody('Introduction This is a test', 100)).toBe('This is a test');
+    expect(getShortBody('introduction this is a test', 100)).toBe('this is a test');
+    expect(getShortBody('INTRODUCTION This is a test', 100)).toBe('This is a test');
+    expect(getShortBody('## Introduction In this article', 100)).toBe('In this article');
+  });
+
+  it('does not remove "Introduction" if it appears in the middle', () => {
+    const text = 'This is an introduction to the topic';
+    const result = getShortBody(text, 100);
+    expect(result).toContain('introduction');
   });
 });

@@ -1,4 +1,12 @@
-<%- include('partials/header', { title: 'Patrique Ouimet', currentPath: '/' }) %>
+<%- include('partials/header-pre-meta', { title: 'Patrique Ouimet', currentPath: '/' }) %>
+
+<meta name="description" content="Patrique Ouimet's engineering blog covering TypeScript, NodeJS, Postgres, PHP, and MySQL. Backend architecture, database design, and practical development tips." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Patrique Ouimet" />
+<meta property="og:description" content="Patrique Ouimet's engineering blog covering TypeScript, NodeJS, Postgres, PHP, and MySQL. Backend architecture, database design, and practical development tips." />
+<meta property="og:image" content="<%= baseUrl %>/img/black-white-profile.png" />
+
+<%- include('partials/header-post-meta', { title: 'Patrique Ouimet', currentPath: '/' }) %>
 
 <h1 class="w-full block mt-3 mb-2 font-bold text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">Hi there 👋, I'm Pat! 😄</h1>
 <p class="block mb-5 leading-relaxed">I'm a Senior Backend Software Engineer primarily working in/with TypeScript/NodeJS but love discovering/trying new technologies!</p>
