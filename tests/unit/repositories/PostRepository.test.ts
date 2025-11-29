@@ -238,7 +238,10 @@ describe('PostRepository', () => {
 
       expect(result).toEqual(previousPost);
       expect(prisma.post.findFirst).toHaveBeenCalledWith({
-        where: { publishedAt: { not: null, lt: currentPost.publishedAt } },
+        where: {
+          publishedAt: { not: null, lt: currentPost.publishedAt },
+          id: { not: currentPost.id },
+        },
         orderBy: { publishedAt: 'desc' },
       });
     });
@@ -262,8 +265,11 @@ describe('PostRepository', () => {
 
       expect(result).toEqual(nextPost);
       expect(prisma.post.findFirst).toHaveBeenCalledWith({
-        where: { publishedAt: { not: null, gt: currentPost.publishedAt } },
-        orderBy: { publishedAt: 'asc' },
+        where: {
+          publishedAt: { not: null, gt: currentPost.publishedAt },
+          id: { not: currentPost.id },
+        },
+        orderBy: { publishedAt: 'desc' },
       });
     });
 

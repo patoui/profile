@@ -91,6 +91,7 @@ export class PostRepository {
     return prisma.post.findFirst({
       where: {
         publishedAt: { not: null, lt: currentPost.publishedAt },
+        id: { not: currentPost.id },
       },
       orderBy: { publishedAt: 'desc' },
     });
@@ -102,8 +103,9 @@ export class PostRepository {
     return prisma.post.findFirst({
       where: {
         publishedAt: { not: null, gt: currentPost.publishedAt },
+        id: { not: currentPost.id },
       },
-      orderBy: { publishedAt: 'asc' },
+      orderBy: { publishedAt: 'desc' },
     });
   }
 

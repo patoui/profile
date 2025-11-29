@@ -50,13 +50,11 @@ export class VideoController {
       return;
     }
 
-    // Track analytics
-    await analyticRepository.record('video', video.id, req);
+    analyticRepository.record('video', video.id, req).catch(console.error);
 
-    // Get previous and next videos
-    const [previousVideo, nextVideo] = await Promise.all([
-      videoRepository.getPreviousPublished(video),
+    const [nextVideo, previousVideo] = await Promise.all([
       videoRepository.getNextPublished(video),
+      videoRepository.getPreviousPublished(video),
     ]);
 
     res.render('videos/show', {

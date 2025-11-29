@@ -91,6 +91,7 @@ export class TipRepository {
     return prisma.tip.findFirst({
       where: {
         publishedAt: { not: null, lt: currentTip.publishedAt },
+        id: { not: currentTip.id },
       },
       orderBy: { publishedAt: 'desc' },
     });
@@ -102,8 +103,9 @@ export class TipRepository {
     return prisma.tip.findFirst({
       where: {
         publishedAt: { not: null, gt: currentTip.publishedAt },
+        id: { not: currentTip.id },
       },
-      orderBy: { publishedAt: 'asc' },
+      orderBy: { publishedAt: 'desc' },
     });
   }
 

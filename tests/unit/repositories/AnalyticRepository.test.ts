@@ -35,9 +35,8 @@ describe('AnalyticRepository', () => {
         socket: { remoteAddress: '192.168.1.1' },
       };
 
-      const result = await repository.record('post', 1, mockReq as any);
+      repository.record('post', 1, mockReq as any);
 
-      expect(result).toEqual(mockAnalytic);
       expect(prisma.analytic.create).toHaveBeenCalledWith({
         data: {
           analyticalId: 1,

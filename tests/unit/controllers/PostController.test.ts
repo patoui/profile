@@ -9,7 +9,7 @@ vi.mock('../../../src/repositories/index.js', () => ({
     getNextPublished: vi.fn(),
   },
   analyticRepository: {
-    record: vi.fn(),
+    record: vi.fn().mockResolvedValue({}),
   },
 }));
 

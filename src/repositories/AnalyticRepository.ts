@@ -18,7 +18,7 @@ export class AnalyticRepository {
 
     const analyticalType = this.getAnalyticalType(type);
 
-    return prisma.analytic.create({
+    return await prisma.analytic.create({
       data: {
         analyticalId: id,
         analyticalType,

@@ -51,13 +51,11 @@ export class TipController {
       return;
     }
 
-    // Track analytics
-    await analyticRepository.record('tip', tip.id, req);
+    analyticRepository.record('tip', tip.id, req).catch(console.error);
 
-    // Get previous and next tips
-    const [previousTip, nextTip] = await Promise.all([
-      tipRepository.getPreviousPublished(tip),
+    const [nextTip, previousTip] = await Promise.all([
       tipRepository.getNextPublished(tip),
+      tipRepository.getPreviousPublished(tip),
     ]);
 
     res.render('tips/show', {

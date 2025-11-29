@@ -98,6 +98,7 @@ export class VideoRepository {
     return prisma.video.findFirst({
       where: {
         publishedAt: { not: null, lt: currentVideo.publishedAt },
+        id: { not: currentVideo.id },
       },
       orderBy: { publishedAt: 'desc' },
     });
@@ -109,8 +110,9 @@ export class VideoRepository {
     return prisma.video.findFirst({
       where: {
         publishedAt: { not: null, gt: currentVideo.publishedAt },
+        id: { not: currentVideo.id },
       },
-      orderBy: { publishedAt: 'asc' },
+      orderBy: { publishedAt: 'desc' },
     });
   }
 

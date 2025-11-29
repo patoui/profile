@@ -51,13 +51,11 @@ export class PostController {
       return;
     }
 
-    // Track analytics
-    await analyticRepository.record('post', post.id, req);
+    analyticRepository.record('post', post.id, req).catch(console.error);
 
-    // Get previous and next posts
-    const [previousPost, nextPost] = await Promise.all([
-      postRepository.getPreviousPublished(post),
+    const [nextPost, previousPost] = await Promise.all([
       postRepository.getNextPublished(post),
+      postRepository.getPreviousPublished(post),
     ]);
 
     res.render('posts/show', {
