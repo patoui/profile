@@ -5,7 +5,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ['dist/', 'node_modules/', 'generated/', 'prisma/', 'public/', '*.ts', 'scripts/'],
+    ignores: ['dist/', 'node_modules/', 'generated/', 'prisma/', 'public/', '*.ts', 'scripts/', 'ecosystem.config.cjs'],
   },
   {
     files: ['**/*.ts'],

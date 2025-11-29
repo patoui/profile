@@ -68,5 +68,5 @@ jobs:
             npm ci --production
             npm run db:generate
             npm run db:deploy
-            pm2 restart profile || pm2 start dist/src/index.js --name profile
+            pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
           EOF
