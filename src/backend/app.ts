@@ -6,19 +6,23 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { loadUser } from './middleware/auth.js';
 import { flashMiddleware } from './middleware/flash.js';
 import publicRoutes from './routes/public.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
 
-const rootDir = process.cwd();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const rootDir = path.join(__dirname, '../..');
 
 const app = express();
 
 // View engine setup
 app.set('view engine', 'ejs');
-app.set('views', path.join(rootDir, 'views'));
+app.set('views', path.join(__dirname, 'views'));
 
 // Make baseUrl available to all views
 app.locals['baseUrl'] = process.env['BASE_URL'] || 'http://localhost:3000';
@@ -29,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Static files
-app.use(express.static(path.join(process.cwd(), '../../public')));
+app.use(express.static(path.join(rootDir, 'public')));
 
 // Session configuration
 app.use(
