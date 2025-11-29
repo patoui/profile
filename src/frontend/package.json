@@ -1,0 +1,19 @@
+{
+  "name": "@nodejs-profile/frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Frontend assets for nodejs-profile",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch"
+  },
+  "dependencies": {
+    "highlight.js": "^11.11.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.22",
+    "esbuild": "^0.27.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18"
+  }
+}

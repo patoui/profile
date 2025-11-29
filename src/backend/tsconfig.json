@@ -1,0 +1,46 @@
+{
+  "include": ["**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+
+    // Node ESM
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2024",
+
+    // Types & libs for Node backend
+    "types": ["node", "express"],
+    "lib": ["esnext"],
+
+    // Debugging
+    "sourceMap": true,
+
+    // No declarations needed if this is just an app
+    "declaration": false,
+    "declarationMap": false,
+
+    // Strictness
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "useUnknownInCatchVariables": true,
+    "noPropertyAccessFromIndexSignature": true,
+
+    // Monorepo / bundler friendliness
+    "isolatedModules": true,
+    "moduleDetection": "force",
+
+    // Real-world perf tradeoff
+    "skipLibCheck": true,
+
+    // Optional but nice in monorepos if you move to project refs
+    "composite": false
+  }
+}

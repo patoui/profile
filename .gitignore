@@ -34,5 +34,12 @@ generated/
 # Tests
 coverage/
 
+# TypeScript build artifacts (should only be in dist/)
+src/**/*.js
+src/**/*.d.ts
+src/**/*.d.ts.map
+src/**/*.js.map
+!src/frontend/**/*.js
+
 # AI
 .claude

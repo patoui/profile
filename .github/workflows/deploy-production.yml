@@ -18,28 +18,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Run linter
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Generate Prisma client
         env:
           DATABASE_URL: "sqlite::memory:"
-        run: npm run db:generate
+        run: pnpm run db:generate
 
       - name: Run tests
-        run: npm run test:run
+        run: pnpm run test:run
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Setup SSH key
         run: |
@@ -60,13 +65,14 @@ jobs:
             --exclude '.git' \
             --exclude '.env' \
             --exclude 'node_modules' \
+            --exclude '.pnpm-store' \
             --exclude '*.db' \
             ./ $SSH_USER@$SSH_HOST:$DEPLOY_PATH
 
           ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
             cd ${{ secrets.DEPLOY_PATH }}
-            npm ci --production
-            npm run db:generate
-            npm run db:deploy
+            pnpm install --frozen-lockfile --prod
+            pnpm run db:generate
+            pnpm run db:deploy
             pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
           EOF
