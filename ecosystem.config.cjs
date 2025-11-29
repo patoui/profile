@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
     name: 'profile',
-    script: './dist/src/index.js',
+    script: './src/backend/dist/index.js',
     instances: 2,
     exec_mode: 'cluster',
     env_production: {
