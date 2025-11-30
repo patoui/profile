@@ -1,11 +1,8 @@
-// Load environment variables first
 import 'dotenv/config';
-
 import express from 'express';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { loadUser } from './middleware/auth.js';
