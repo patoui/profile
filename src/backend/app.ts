@@ -16,13 +16,18 @@ import adminRoutes from './routes/admin.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const rootDir = path.join(__dirname, '../..');
+// In production, we run from dist/, so we need to go up 3 levels
+// In development, we run from src/backend/, so we need to go up 2 levels
+const isRunningFromDist = __dirname.includes('/dist');
+const rootDir = isRunningFromDist
+  ? path.join(__dirname, '../../..')
+  : path.join(__dirname, '../..');
 
 const app = express();
 
 // View engine setup
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(rootDir, 'src/backend/views'));
 
 // Make baseUrl available to all views
 app.locals['baseUrl'] = process.env['BASE_URL'] || 'http://localhost:3000';
