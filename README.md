@@ -24,7 +24,7 @@ A personal portfolio and blog website built with Node.js, Express, and TypeScrip
 ## 📋 Prerequisites
 
 - Node.js 18+
-- npm
+- pnpm
 
 ## ⚙️ Installation
 
@@ -36,7 +36,7 @@ A personal portfolio and blog website built with Node.js, Express, and TypeScrip
 
 2. Install dependencies:
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. Set up environment variables:
@@ -47,13 +47,13 @@ A personal portfolio and blog website built with Node.js, Express, and TypeScrip
 
 4. Generate Prisma client and run migrations:
    ```bash
-   npm run db:generate
-   npm run db:migrate
+   pnpm db:generate
+   pnpm db:migrate
    ```
 
 5. (Optional) Seed the database:
    ```bash
-   npm run db:seed
+   pnpm db:seed
    ```
 
 ## 💻 Development
@@ -61,7 +61,7 @@ A personal portfolio and blog website built with Node.js, Express, and TypeScrip
 Start the development server with hot reload:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 The server will start at `http://localhost:3000`.
@@ -70,20 +70,20 @@ The server will start at `http://localhost:3000`.
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start development server with hot reload |
-| `npm run build` | Build TypeScript to JavaScript |
-| `npm start` | Run production build |
-| `npm run routes` | List all application routes |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Fix ESLint errors |
-| `npm test` | Run tests in watch mode |
-| `npm run test:run` | Run tests once |
-| `npm run test:coverage` | Run tests with coverage |
-| `npm run db:generate` | Generate Prisma client |
-| `npm run db:migrate` | Run database migrations (development) |
-| `npm run db:deploy` | Deploy migrations (production) |
-| `npm run db:push` | Push schema to database |
-| `npm run db:seed` | Seed the database |
+| `pnpm dev` | Start development server with hot reload |
+| `pnpm build` | Build TypeScript to JavaScript |
+| `pnpm start` | Run production build |
+| `pnpm routes` | List all application routes |
+| `pnpm lint` | Run ESLint |
+| `pnpm lint:fix` | Fix ESLint errors |
+| `pnpm test` | Run tests in watch mode |
+| `pnpm test:run` | Run tests once |
+| `pnpm test:coverage` | Run tests with coverage |
+| `pnpm db:generate` | Generate Prisma client |
+| `pnpm db:migrate` | Run database migrations (development) |
+| `pnpm db:deploy` | Deploy migrations (production) |
+| `pnpm db:push` | Push schema to database |
+| `pnpm db:seed` | Seed the database |
 
 ## 🌳 Environment Variables
 
