@@ -17,10 +17,9 @@
     "db:push": "prisma db push --schema=../../prisma/schema.prisma",
     "db:seed": "tsx ../../prisma/seed.ts",
     "test": "vitest",
-    "test:mutation": "pnpm stryker run",
     "test:run": "vitest run",
-    "test:run:unit": "vitest run tests/unit",
-    "test:run:integration": "vitest run tests/integration",
+    "test:run:unit": "vitest run ../../tests/unit",
+    "test:run:integration": "vitest run ../../tests/integration",
     "test:coverage": "vitest run --coverage",
     "test:coverage:unit": "vitest run ../../tests/unit --coverage",
     "test:coverage:integration": "vitest run ../../tests/integration --coverage"
@@ -42,8 +41,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@stryker-mutator/core": "^9.4.0",
-    "@stryker-mutator/vitest-runner": "^9.4.0",
     "@types/bcrypt": "^5.0.2",
     "@types/better-sqlite3": "^7.6.13",
     "@types/cookie-parser": "^1.4.7",
