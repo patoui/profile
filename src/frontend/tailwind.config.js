@@ -4,6 +4,11 @@ export default {
     '../backend/views/**/*.ejs',
     '../../public/**/*.js',
   ],
+  safelist: [
+    'markdown-body',
+    'list-reset',
+    { pattern: /markdown-body.*/ }
+  ],
   theme: {
     extend: {},
   },
