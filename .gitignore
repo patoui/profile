@@ -33,6 +33,8 @@ generated/
 
 # Tests
 coverage/
+*.stryker-tmp
+reports/
 
 # TypeScript build artifacts (should only be in dist/)
 src/**/*.js

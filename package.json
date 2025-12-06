@@ -18,6 +18,7 @@
     "db:push": "pnpm --filter @nodejs-profile/backend db:push",
     "db:seed": "pnpm --filter @nodejs-profile/backend db:seed",
     "test": "pnpm --filter @nodejs-profile/backend test",
+    "test:mutation": "pnpm --filter @nodejs-profile/backend test:mutation",
     "test:run": "pnpm --filter @nodejs-profile/backend test:run",
     "test:run:unit": "pnpm --filter @nodejs-profile/backend test:run:unit",
     "test:run:integration": "pnpm --filter @nodejs-profile/backend test:run:integration",
