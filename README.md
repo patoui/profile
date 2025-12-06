@@ -77,7 +77,6 @@ The server will start at `http://localhost:3000`.
 | `pnpm lint` | Run ESLint |
 | `pnpm lint:fix` | Fix ESLint errors |
 | `pnpm test` | Run tests in watch mode |
-| `pnpm test:mutation` | Run tests for mutations |
 | `pnpm test:run` | Run tests once |
 | `pnpm test:coverage` | Run tests with coverage |
 | `pnpm db:generate` | Generate Prisma client |
