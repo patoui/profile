@@ -8,6 +8,7 @@ module.exports = {
       NODE_ENV: 'production'
     },
     kill_timeout: 5000,
-    max_memory_restart: '500M'
+    max_memory_restart: '500M',
+    log_date_format: 'YYYY-MM-DD HH:mm:ss Z'
   }]
 }
