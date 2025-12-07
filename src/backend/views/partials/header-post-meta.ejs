@@ -3,7 +3,7 @@
 
     <title><%= typeof title !== 'undefined' && title ? title : '' %> | <%= typeof appName !== 'undefined' && appName ? appName : 'Profile' %></title>
 
-    <link rel="stylesheet" href="/dist/main.css">
+    <link rel="stylesheet" href="<%= asset('/dist/main.css') %>">
     <style>
         /* Only truly critical styles that can't wait for Tailwind CSS to load */
         body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }

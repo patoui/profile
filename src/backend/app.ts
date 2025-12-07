@@ -10,6 +10,7 @@ import { flashMiddleware } from './middleware/flash.js';
 import publicRoutes from './routes/public.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
+import { asset } from './utils/asset-helper.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,8 +27,8 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(rootDir, 'src/backend/views'));
 
-// Make baseUrl available to all views
 app.locals['baseUrl'] = process.env['BASE_URL'] || 'http://localhost:3000';
+app.locals['asset'] = asset;
 
 // Middleware
 app.use(express.json());

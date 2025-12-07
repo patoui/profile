@@ -74,5 +74,13 @@ jobs:
             pnpm install --frozen-lockfile --prod
             pnpm run db:generate
             pnpm run db:deploy
+
+            # Update or add VERSION with current timestamp
+            if grep -q "^VERSION=" .env; then
+              sed -i "s/^VERSION=.*/VERSION=$(date +%s)/" .env
+            else
+              echo "VERSION=$(date +%s%3N)" >> .env
+            fi
+
             pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
           EOF

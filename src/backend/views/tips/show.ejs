@@ -10,7 +10,7 @@
     slug: tip.slug
 }) %>
 
-<%- include('../partials/header-post-meta', { title: tip.title, currentPath: '/tip', css: '<link rel="stylesheet" href="/dist/highlight.css">' }) %>
+<%- include('../partials/header-post-meta', { title: tip.title, currentPath: '/tip', css: '<link rel="stylesheet" href="' + asset('/dist/highlight.css') + '">' }) %>
 
 <%- include('../partials/article-header', { title: tip.title, publishedAt: tip.publishedAt }) %>
 

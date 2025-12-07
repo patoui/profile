@@ -11,7 +11,7 @@
 
     <title><%= typeof title !== 'undefined' && title ? title : '' %> | <%= typeof appName !== 'undefined' && appName ? appName : 'Profile' %></title>
 
-    <link rel="stylesheet" href="/dist/main.css">
+    <link rel="stylesheet" href="<%= asset('/dist/main.css') %>">
     <%- typeof css !== 'undefined' ? css : '' %>
 </head>
 <body>
