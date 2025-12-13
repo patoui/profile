@@ -24,6 +24,15 @@ tracer.init({
 
   // Sample rate (1.0 = 100% of traces)
   sampleRate: parseFloat(process.env['DD_TRACE_SAMPLE_RATE'] || '1.0'),
+
+  // Database service name for better SQL tracking
+  dbmPropagationMode: 'full',
+});
+
+// Enable Prisma integration for query tracing
+tracer.use('prisma', {
+  enabled: true,
+  service: process.env['DD_SERVICE'] ? `${process.env['DD_SERVICE']}-prisma` : 'profile-prisma',
 });
 
 export default tracer;
