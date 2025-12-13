@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import './tracer.js';
 import app from './app.js';
 
