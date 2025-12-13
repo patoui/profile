@@ -12,28 +12,36 @@ const prisma = new PrismaClient({
   log: [{ emit: "event", level: "query" }],
 })
   .$on("query", (e) => {
-    const span = tracer.startSpan(`prisma_raw_query`, {
-      childOf: tracer.scope().active() || undefined,
+    const activeSpan = tracer.scope().active();
+    const spanOptions: Parameters<typeof tracer.startSpan>[1] = {
       tags: {
         "prisma.rawquery": e.query,
         "prisma.duration_ms": e.duration,
       },
-    });
+    };
+    if (activeSpan) {
+      spanOptions.childOf = activeSpan;
+    }
+    const span = tracer.startSpan(`prisma_raw_query`, spanOptions);
     span.finish();
   })
   .$extends({
     query: {
       async $allOperations({ operation, model, args, query }) {
+        const activeSpan = tracer.scope().active();
+        const spanOptions: Parameters<typeof tracer.startSpan>[1] = {
+          tags: {
+            "prisma.operation": operation,
+            "prisma.model": model ?? 'unknown',
+            "prisma.args": JSON.stringify(args),
+          },
+        };
+        if (activeSpan) {
+          spanOptions.childOf = activeSpan;
+        }
         const span = tracer.startSpan(
           `prisma_query_${model?.toLowerCase() ?? 'unknown'}_${operation}`,
-          {
-            tags: {
-              "prisma.operation": operation,
-              "prisma.model": model ?? 'unknown',
-              "prisma.args": JSON.stringify(args),
-            },
-            childOf: tracer.scope().active() || undefined,
-          }
+          spanOptions
         );
         try {
           const result = await query(args);
