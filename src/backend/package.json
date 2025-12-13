@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@libsql/client": "^0.15.15",
+    "dd-trace": "^5.80.0",
     "@prisma/adapter-better-sqlite3": "^7.0.0",
     "@prisma/adapter-libsql": "^7.0.0",
     "@prisma/client": "^7.0.0",
