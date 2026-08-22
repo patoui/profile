@@ -1,0 +1,14 @@
+.git
+.gitignore
+.cursor
+.env
+.env.*
+*.db
+README.md
+ecosystem.config.cjs
+node_modules
+**/node_modules
+**/.pnpm-store
+src/backend/dist
+src/backend/generated
+public/dist
