@@ -25,5 +25,9 @@
     "test:coverage": "pnpm --filter @nodejs-profile/backend test:coverage",
     "test:coverage:unit": "pnpm --filter @nodejs-profile/backend test:coverage:unit",
     "test:coverage:integration": "pnpm --filter @nodejs-profile/backend test:coverage:integration"
+  },
+  "devDependencies": {
+    "@prisma/orm-postgres": "8.0.0-rc.8",
+    "prisma": "8.0.0-rc.13"
   }
 }
