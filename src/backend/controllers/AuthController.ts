@@ -15,7 +15,10 @@ export class AuthController {
   }
 
   async login(req: Request, res: Response): Promise<void> {
-    const { email, password } = req.body;
+    const { email, password } = req.body as {
+      email?: string;
+      password?: string;
+    };
 
     // Validate input
     const errors: Record<string, string> = {};
@@ -50,7 +53,7 @@ export class AuthController {
     // Verify password
     // Convert PHP's $2y$ bcrypt prefix to Node.js compatible $2a$ prefix
     const compatibleHash = user.password.replace(/^\$2y\$/, '$2a$');
-    const validPassword = await bcrypt.compare(password, compatibleHash);
+    const validPassword = await bcrypt.compare(password!, compatibleHash);
     if (!validPassword) {
       res.render('auth/login', {
         title: 'Login',

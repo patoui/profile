@@ -3,6 +3,13 @@ import dotenv from "dotenv";
 import { fileURLToPath } from "node:url";
 import postgres from "@prisma/orm-postgres/runtime";
 import contractJson from "../../../prisma/contract.json" with { type: "json" };
+import type {
+  Analytic,
+  Post,
+  Tip,
+  User,
+  Video,
+} from "../types/prisma.js";
 
 const temporalGlobal = globalThis as typeof globalThis & {
   Temporal: {
@@ -33,23 +40,22 @@ type OrderByInput =
   | Record<string, "asc" | "desc">
   | Array<Record<string, "asc" | "desc">>;
 type QueryField = {
-  eq(value: unknown): QueryNode;
-  neq(value: unknown): QueryNode;
-  lte(value: unknown): QueryNode;
-  lt(value: unknown): QueryNode;
-  gte(value: unknown): QueryNode;
-  gt(value: unknown): QueryNode;
-  in(value: unknown[]): QueryNode;
-  notIn(value: unknown[]): QueryNode;
-  isNotNull(): QueryNode;
-  asc(): QueryOrder;
-  desc(): QueryOrder;
+  eq(value: unknown): unknown;
+  neq(value: unknown): unknown;
+  lte(value: unknown): unknown;
+  lt(value: unknown): unknown;
+  gte(value: unknown): unknown;
+  gt(value: unknown): unknown;
+  in(value: unknown[]): unknown;
+  notIn(value: unknown[]): unknown;
+  isNotNull(): unknown;
+  asc(): unknown;
+  desc(): unknown;
 };
 type QueryFields = Record<string, QueryField>;
-type QueryOrder = unknown;
 type QueryNode = {
-  where(predicate: (fields: QueryFields) => QueryNode | QueryField | QueryOrder): QueryNode;
-  orderBy(orderBy: QueryOrder | QueryOrder[]): QueryNode;
+  where(predicate: (fields: QueryFields) => unknown): QueryNode;
+  orderBy(orderBy: unknown): QueryNode;
   all(): Promise<unknown[]>;
   update(data: Record<string, unknown>): Promise<unknown>;
   delete(): Promise<unknown>;
@@ -104,11 +110,11 @@ function normalizeData(data: Record<string, unknown>) {
   );
 }
 
-function normalizeResult<T>(value: T): T {
+function normalizeResult<T>(value: unknown): T {
   return fromTemporalInstant(value) as T;
 }
 
-function applyWhere(query: QueryNode | QueryModel, where?: WhereInput) {
+function applyWhere<T extends QueryNode>(query: T, where?: WhereInput): T {
   if (!where) {
     return query;
   }
@@ -116,15 +122,15 @@ function applyWhere(query: QueryNode | QueryModel, where?: WhereInput) {
   for (const [key, value] of Object.entries(where)) {
     if (Array.isArray(value)) {
       query = query.where((fields: QueryFields) =>
-        fields[key].in(value.map(toTemporalInstant))
-      );
+        fields[key]!.in(value.map(toTemporalInstant))
+      ) as T;
       continue;
     }
 
     if (value instanceof Date || typeof value !== "object" || value === null) {
       query = query.where((fields: QueryFields) =>
-        fields[key].eq(toTemporalInstant(value))
-      );
+        fields[key]!.eq(toTemporalInstant(value))
+      ) as T;
       continue;
     }
 
@@ -132,7 +138,7 @@ function applyWhere(query: QueryNode | QueryModel, where?: WhereInput) {
       value as Record<string, unknown>
     )) {
       query = query.where((fields: QueryFields) => {
-        const field = fields[key];
+        const field = fields[key]!;
         const normalized = toTemporalInstant(operand);
 
         switch (operator) {
@@ -153,7 +159,7 @@ function applyWhere(query: QueryNode | QueryModel, where?: WhereInput) {
           default:
             return field.eq(normalized);
         }
-      });
+      }) as T;
     }
   }
 
@@ -167,11 +173,11 @@ function buildOrderBy(orderBy?: OrderByInput) {
 
   const buildDirective = (entry: Record<string, "asc" | "desc">) => {
     return (fields: QueryFields) => {
-      const [field, direction] = Object.entries(entry)[0] as [
+      const [field, direction] = Object.entries(entry)[0]! as [
         string,
         "asc" | "desc",
       ];
-      return direction === "asc" ? fields[field].asc() : fields[field].desc();
+      return direction === "asc" ? fields[field]!.asc() : fields[field]!.desc();
     };
   };
 
@@ -182,73 +188,98 @@ function buildOrderBy(orderBy?: OrderByInput) {
   return buildDirective(orderBy);
 }
 
-function createModel(model: unknown) {
+type ModelClient<T> = {
+  findMany(args?: {
+    where?: WhereInput;
+    orderBy?: OrderByInput;
+    select?: unknown;
+  }): Promise<T[]>;
+  findUnique(args: { where: WhereInput }): Promise<T | null>;
+  findFirst(args?: {
+    where?: WhereInput;
+    orderBy?: OrderByInput;
+    select?: unknown;
+  }): Promise<T | null>;
+  create(args: { data: Record<string, unknown> }): Promise<T>;
+  update(args: { where: WhereInput; data: Record<string, unknown> }): Promise<T>;
+  delete(args: { where: WhereInput }): Promise<void>;
+  count(args?: { where?: WhereInput }): Promise<number>;
+  upsert(args: {
+    where: WhereInput;
+    update: Record<string, unknown>;
+    create: Record<string, unknown>;
+  }): Promise<T>;
+};
+
+function createModel<T>(model: unknown): ModelClient<T> {
   const typedModel = model as QueryModel;
 
   return {
     findMany(
       args: { where?: WhereInput; orderBy?: OrderByInput; select?: unknown } = {}
-    ) {
+    ): Promise<T[]> {
       let query = typedModel;
       query = applyWhere(query, args.where);
       const orderBy = buildOrderBy(args.orderBy);
       if (orderBy) {
-        query = query.orderBy(orderBy as QueryOrder | QueryOrder[]);
+        query = query.orderBy(orderBy as unknown) as QueryModel;
       }
-      return query.all().then(normalizeResult);
+      return query.all().then((rows) => normalizeResult(rows) as T[]);
     },
-    findUnique(args: { where: WhereInput }) {
+    findUnique(args: { where: WhereInput }): Promise<T | null> {
       const query = applyWhere(typedModel, args.where);
-      return query.all().then((rows: unknown[]) => normalizeResult(rows[0] ?? null));
+      return query.all().then((rows) => normalizeResult<T | null>(rows[0] ?? null));
     },
     findFirst(
       args: { where?: WhereInput; orderBy?: OrderByInput; select?: unknown } = {}
-    ) {
+    ): Promise<T | null> {
       let query = typedModel;
       query = applyWhere(query, args.where);
       const orderBy = buildOrderBy(args.orderBy);
       if (orderBy) {
-        query = query.orderBy(orderBy as QueryOrder | QueryOrder[]);
+        query = query.orderBy(orderBy as unknown) as QueryModel;
       }
-      return query.all().then((rows: unknown[]) => normalizeResult(rows[0] ?? null));
+      return query.all().then((rows) => normalizeResult<T | null>(rows[0] ?? null));
     },
-    create(args: { data: Record<string, unknown> }) {
-      return typedModel.create(normalizeData(args.data)).then(normalizeResult);
+    create(args: { data: Record<string, unknown> }): Promise<T> {
+      return typedModel
+        .create(normalizeData(args.data))
+        .then((result) => normalizeResult<T>(result));
     },
-    update(args: { where: WhereInput; data: Record<string, unknown> }) {
+    update(args: { where: WhereInput; data: Record<string, unknown> }): Promise<T> {
       return applyWhere(typedModel, args.where)
         .update(normalizeData(args.data))
-        .then(normalizeResult);
+        .then((result) => normalizeResult<T>(result));
     },
-    delete(args: { where: WhereInput }) {
-      return applyWhere(typedModel, args.where).delete().then(normalizeResult);
+    delete(args: { where: WhereInput }): Promise<void> {
+      return applyWhere(typedModel, args.where).delete().then(() => undefined);
     },
-    count(args: { where?: WhereInput } = {}) {
+    count(args: { where?: WhereInput } = {}): Promise<number> {
       let query = typedModel;
       query = applyWhere(query, args.where);
-      return query.all().then((rows: unknown[]) => rows.length);
+      return query.all().then((rows) => rows.length);
     },
     upsert(args: {
       where: WhereInput;
       update: Record<string, unknown>;
       create: Record<string, unknown>;
-    }) {
+    }): Promise<T> {
       return typedModel.upsert({
         create: normalizeData(args.create),
         update: normalizeData(args.update),
         conflictOn: args.where,
-      }).then(normalizeResult);
+      }).then((result) => normalizeResult<T>(result));
     },
   };
 }
 
-const publicDb = db.orm["public"] as Record<string, QueryModel>;
+const publicDb = db.orm["public"] as unknown as Record<string, QueryModel>;
 
 export const prisma = {
-  user: createModel(publicDb["User"]),
-  post: createModel(publicDb["Post"]),
-  tip: createModel(publicDb["Tip"]),
-  video: createModel(publicDb["Video"]),
-  analytic: createModel(publicDb["Analytic"]),
+  user: createModel<User>(publicDb["User"]),
+  post: createModel<Post>(publicDb["Post"]),
+  tip: createModel<Tip>(publicDb["Tip"]),
+  video: createModel<Video>(publicDb["Video"]),
+  analytic: createModel<Analytic>(publicDb["Analytic"]),
   $disconnect: () => db.close(),
 };
