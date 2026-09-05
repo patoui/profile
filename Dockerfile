@@ -44,8 +44,8 @@ COPY src/frontend/package.json ./src/frontend/
 # Production deps only (pnpm recompiles native modules for the linux/alpine target)
 RUN pnpm install --frozen-lockfile --prod
 
-# Prisma schema + migrations (available for runtime migration runs)
-COPY prisma/ ./prisma/
+# Prisma contract + migrations (available for runtime migration runs)
+COPY prisma/ ./src/prisma/
 
 # Compiled backend JS
 COPY --from=builder /app/src/backend/dist ./src/backend/dist
