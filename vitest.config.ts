@@ -5,6 +5,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['tests/**/*.test.ts'],
+    exclude: ['**/dist/**', '**/node_modules/**'],
     setupFiles: ['tests/setup.ts'],
     // Run tests in parallel with isolated pools for integration tests
     pool: 'forks',

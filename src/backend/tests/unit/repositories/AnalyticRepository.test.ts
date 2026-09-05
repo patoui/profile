@@ -100,7 +100,7 @@ describe('AnalyticRepository', () => {
       await repository.record('post', 1, mockReq as any);
 
       const callArgs = vi.mocked(prisma.analytic.create).mock.calls[0]?.[0];
-      const headers = JSON.parse(callArgs?.data.headers as string);
+      const headers = JSON.parse(callArgs?.data['headers'] as string);
       expect(headers).toEqual({
         userAgent: 'Chrome',
         ip: '1.2.3.4',

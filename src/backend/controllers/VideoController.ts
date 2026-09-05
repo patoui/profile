@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { videoRepository, analyticRepository } from '../repositories/index.js';
 import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl, getShortBody } from '../utils/helpers.js';
-import { Video } from '../generated/prisma/client.js';
+import type { Video } from '../types/prisma.js';
 
 function parseTags(tagsJson: string): string[] {
   try {

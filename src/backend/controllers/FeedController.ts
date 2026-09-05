@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Feed } from 'feed';
 import { postRepository, tipRepository, videoRepository } from '../repositories/index.js';
-import { Post, Tip, Video } from '../generated/prisma/client.js';
+import type { Post, Tip, Video } from '../types/prisma.js';
 
 const APP_NAME = process.env['APP_NAME'] || 'Patrique Ouimet';
 const BASE_URL = process.env['BASE_URL'] || 'http://localhost:3000';

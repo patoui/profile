@@ -35,13 +35,11 @@ jobs:
       - name: Run linter
         run: pnpm run lint
 
-      - name: Generate Prisma client
-        env:
-          DATABASE_URL: "sqlite::memory:"
-        run: pnpm run db:generate
+      - name: Emit Prisma contract
+        run: pnpm run contract:emit
 
-      - name: Run tests
-        run: pnpm run test:run
+      - name: Run unit tests
+        run: pnpm run test:run:unit
 
       - name: Build
         run: pnpm run build
@@ -72,8 +70,7 @@ jobs:
           ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
             cd ${{ secrets.DEPLOY_PATH }}
             pnpm install --frozen-lockfile --prod
-            pnpm run db:generate
-            pnpm run db:deploy
+            pnpm run db:migrate
 
             # Update or add VERSION with current timestamp
             if grep -q "^VERSION=" .env; then

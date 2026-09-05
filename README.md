@@ -17,7 +17,7 @@ A personal portfolio and blog website built with Node.js, Express, and TypeScrip
 - **Runtime**: Node.js
 - **Framework**: Express 5
 - **Language**: TypeScript
-- **Database**: SQLite with Prisma ORM
+- **Database**: PostgreSQL with Prisma ORM
 - **Templating**: EJS
 - **Authentication**: bcrypt + express-session
 
@@ -45,9 +45,9 @@ A personal portfolio and blog website built with Node.js, Express, and TypeScrip
    ```
    Edit `.env` with your configuration.
 
-4. Generate Prisma client and run migrations:
+4. Emit the Prisma contract and run migrations:
    ```bash
-   pnpm db:generate
+   pnpm contract:emit
    pnpm db:migrate
    ```
 
@@ -79,10 +79,11 @@ The server will start at `http://localhost:3000`.
 | `pnpm test` | Run tests in watch mode |
 | `pnpm test:run` | Run tests once |
 | `pnpm test:coverage` | Run tests with coverage |
-| `pnpm db:generate` | Generate Prisma client |
+| `pnpm contract:emit` | Emit Prisma contract artifacts |
+| `pnpm db:init` | Initialize and sign the database |
+| `pnpm db:sign` | Sign an existing database against the emitted contract |
+| `pnpm db:verify` | Verify a database against the emitted contract |
 | `pnpm db:migrate` | Run database migrations (development) |
-| `pnpm db:deploy` | Deploy migrations (production) |
-| `pnpm db:push` | Push schema to database |
 | `pnpm db:seed` | Seed the database |
 
 ## 🌳 Environment Variables
@@ -93,6 +94,7 @@ The server will start at `http://localhost:3000`.
 | `PORT` | Server port | `3000` |
 | `APP_NAME` | Application name | - |
 | `BASE_URL` | Base URL for the site | `http://localhost:3000` |
-| `DATABASE_URL` | SQLite database path | `file:./dev.db` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://profile:change-me@127.0.0.1:5432/profile` |
+| `TEST_DATABASE_URL` | PostgreSQL connection string for integration tests | `postgresql://profile:change-me@127.0.0.1:5432/profile_test` |
 | `SESSION_SECRET` | Session encryption secret | - |
 | `ADMIN_EMAIL` | Admin user email | - |

@@ -1,4 +1,4 @@
-import { Post } from '../generated/prisma/client.js';
+import type { Post } from '../types/prisma.js';
 import { prisma } from '../lib/prisma.js';
 import { generateSlug } from '../utils/helpers.js';
 import { PostInput } from '../types/index.js';

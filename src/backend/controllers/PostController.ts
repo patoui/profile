@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { postRepository, analyticRepository } from '../repositories/index.js';
 import { parseMarkdown, getShortBody } from '../utils/helpers.js';
-import { Post } from '../generated/prisma/client.js';
+import type { Post } from '../types/prisma.js';
 
 function parseTags(tagsJson: string): string[] {
   try {

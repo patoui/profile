@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { postRepository } from '../../repositories/index.js';
-import { Post } from '../../generated/prisma/client.js';
+import type { Post } from '../../types/prisma.js';
 import { prisma } from '../../lib/prisma.js';
 
 function parseTags(tagsJson: string): string[] {

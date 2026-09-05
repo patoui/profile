@@ -1,4 +1,4 @@
-import { User } from '../generated/prisma/client.js';
+import type { User } from './prisma.js';
 
 // Extend Express Session
 declare module 'express-session' {

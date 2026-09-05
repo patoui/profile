@@ -1,4 +1,4 @@
-import { Tip } from '../generated/prisma/client.js';
+import type { Tip } from '../types/prisma.js';
 import { prisma } from '../lib/prisma.js';
 import { generateSlug } from '../utils/helpers.js';
 import { TipInput } from '../types/index.js';

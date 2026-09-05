@@ -1,9 +1,5 @@
-import { describe, it, expect, vi, beforeEach, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeEach, beforeAll, afterAll } from 'vitest';
 import { testPrisma, setupTestDatabase, cleanupTestDatabase } from '../setup.js';
-
-vi.mock('../../../lib/prisma.js', () => ({
-  prisma: testPrisma,
-}));
 
 import { TipRepository } from '../../../repositories/TipRepository.js';
 

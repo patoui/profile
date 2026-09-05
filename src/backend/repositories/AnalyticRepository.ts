@@ -1,4 +1,4 @@
-import { Analytic } from '../generated/prisma/client.js';
+import type { Analytic } from '../types/prisma.js';
 import { prisma } from '../lib/prisma.js';
 import { Request } from 'express';
 

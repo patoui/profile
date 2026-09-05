@@ -1,12 +1,5 @@
-import { describe, it, expect, vi, beforeEach, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeEach, beforeAll, afterAll } from 'vitest';
 import { testPrisma, setupTestDatabase, cleanupTestDatabase } from '../setup.js';
-
-// Mock the prisma import to use our test database
-vi.mock('../../../lib/prisma.js', () => ({
-  prisma: testPrisma,
-}));
-
-// Import after mocking
 import { PostRepository } from '../../../repositories/PostRepository.js';
 
 describe('PostRepository Integration', () => {

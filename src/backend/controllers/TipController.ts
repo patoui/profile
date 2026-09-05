@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { tipRepository, analyticRepository } from '../repositories/index.js';
 import { parseMarkdown, getShortBody } from '../utils/helpers.js';
-import { Tip } from '../generated/prisma/client.js';
+import type { Tip } from '../types/prisma.js';
 
 function parseTags(tagsJson: string): string[] {
   try {

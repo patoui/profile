@@ -1,12 +1,3 @@
-generator client {
-  provider = "prisma-client"
-  output   = "../src/backend/generated/prisma"
-}
-
-datasource db {
-  provider = "sqlite"
-}
-
 model User {
   id              Int       @id @default(autoincrement())
   name            String
@@ -15,7 +6,7 @@ model User {
   emailVerifiedAt DateTime? @map("email_verified_at")
   rememberToken   String?   @map("remember_token")
   createdAt       DateTime  @default(now()) @map("created_at")
-  updatedAt       DateTime  @updatedAt @map("updated_at")
+  updatedAt       DateTime  @default(now()) @map("updated_at")
 
   @@map("users")
 }
@@ -25,10 +16,10 @@ model Post {
   title       String
   slug        String    @unique
   body        String
-  tags        String    @default("[]") // JSON array of tag names
+  tags        String    @default("[]")
   publishedAt DateTime? @map("published_at")
   createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  updatedAt   DateTime  @default(now()) @map("updated_at")
 
   @@map("posts")
 }
@@ -38,10 +29,10 @@ model Tip {
   title       String
   slug        String    @unique
   body        String
-  tags        String    @default("[]") // JSON array of tag names
+  tags        String    @default("[]")
   publishedAt DateTime? @map("published_at")
   createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  updatedAt   DateTime  @default(now()) @map("updated_at")
 
   @@map("tips")
 }
@@ -52,10 +43,10 @@ model Video {
   slug        String    @unique
   description String
   externalId  String    @map("external_id")
-  tags        String    @default("[]") // JSON array of tag names
+  tags        String    @default("[]")
   publishedAt DateTime? @map("published_at")
   createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  updatedAt   DateTime  @default(now()) @map("updated_at")
 
   @@map("videos")
 }
@@ -64,9 +55,9 @@ model Analytic {
   id             Int      @id @default(autoincrement())
   analyticalId   Int      @map("analytical_id")
   analyticalType String   @map("analytical_type")
-  headers        String   @default("{}") // JSON string
+  headers        String   @default("{}")
   createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  updatedAt      DateTime @default(now()) @map("updated_at")
 
   @@map("analytics")
 }

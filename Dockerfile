@@ -1,7 +1,7 @@
 # ─── Stage 1: Builder ────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 
-# Native build tools required for bcrypt and better-sqlite3
+# Native build tools required for bcrypt
 RUN apk add --no-cache python3 make g++
 RUN corepack enable && corepack prepare pnpm@9 --activate
 
@@ -20,8 +20,8 @@ RUN pnpm install --frozen-lockfile
 COPY src/ ./src/
 COPY public/ ./public/
 
-# Generate Prisma client for the linux/alpine target
-RUN DATABASE_URL="sqlite::memory:" pnpm run db:generate
+# Emit the Prisma contract for the linux/alpine target
+RUN DATABASE_URL="postgresql://postgres:postgres@localhost:5432/profile" pnpm run contract:emit
 
 # Build frontend (→ public/dist/) and backend (tsc → src/backend/dist/)
 RUN pnpm run build
@@ -30,7 +30,7 @@ RUN pnpm run build
 # ─── Stage 2: Production ─────────────────────────────────────────────────────
 FROM node:22-alpine AS production
 
-# Native build tools required for bcrypt and better-sqlite3 postinstall scripts
+# Native build tools required for bcrypt postinstall scripts
 RUN apk add --no-cache python3 make g++
 RUN corepack enable && corepack prepare pnpm@9 --activate
 

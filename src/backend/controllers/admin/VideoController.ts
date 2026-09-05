@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { videoRepository } from '../../repositories/index.js';
-import { Video } from '../../generated/prisma/client.js';
+import type { Video } from '../../types/prisma.js';
 
 function parseTags(tagsJson: string): string[] {
   try {

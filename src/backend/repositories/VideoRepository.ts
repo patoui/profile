@@ -1,4 +1,4 @@
-import { Video } from '../generated/prisma/client.js';
+import type { Video } from '../types/prisma.js';
 import { prisma } from '../lib/prisma.js';
 import { generateSlug } from '../utils/helpers.js';
 import { VideoInput } from '../types/index.js';
