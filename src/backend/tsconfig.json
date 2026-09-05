@@ -9,6 +9,7 @@
   ],
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": ".",
 
     // Node ESM
     "module": "nodenext",
