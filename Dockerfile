@@ -47,9 +47,6 @@ RUN pnpm install --frozen-lockfile --prod
 # Prisma schema + migrations (available for runtime migration runs)
 COPY prisma/ ./prisma/
 
-# Pre-built Prisma client (already compiled for linux/alpine in builder)
-COPY --from=builder /app/src/backend/generated ./src/backend/generated
-
 # Compiled backend JS
 COPY --from=builder /app/src/backend/dist ./src/backend/dist
 
