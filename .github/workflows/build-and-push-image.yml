@@ -75,3 +75,31 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Checkout homelab repository
+        uses: actions/checkout@v4
+        with:
+          repository: patoui/homelab
+          token: ${{ secrets.HOMELAB_TOKEN }}
+          path: homelab
+
+      - name: Update homelab image reference
+        env:
+          IMAGE_TAG: ${{ steps.meta.outputs.version }}
+        run: |
+          deployment_file=homelab/apps/patriqueouimet/deployment.yaml
+          image="ghcr.io/patoui/profile:${IMAGE_TAG}"
+
+          grep -Eq "ghcr\\.io/patoui/profile:[^[:space:]\\\"']+" "$deployment_file"
+          sed -i -E "s#ghcr\.io/patoui/profile:[^[:space:]\"']+#${image}#" "$deployment_file"
+
+          if git -C homelab diff --quiet -- apps/patriqueouimet/deployment.yaml; then
+            echo "Homelab is already configured for ${image}."
+            exit 0
+          fi
+
+          git -C homelab config user.name "github-actions[bot]"
+          git -C homelab config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C homelab add apps/patriqueouimet/deployment.yaml
+          git -C homelab commit -m "chore: update profile image to ${IMAGE_TAG}"
+          git -C homelab push origin HEAD
