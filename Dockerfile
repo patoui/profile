@@ -1,5 +1,5 @@
 # ─── Stage 1: Builder ────────────────────────────────────────────────────────
-FROM node:22-alpine AS builder
+FROM node:22.23.4-alpine AS builder
 
 # Native build tools required for bcrypt
 RUN apk add --no-cache python3 make g++
@@ -28,7 +28,7 @@ RUN pnpm run build
 
 
 # ─── Stage 2: Production ─────────────────────────────────────────────────────
-FROM node:22-alpine AS production
+FROM node:22.23.4-alpine AS production
 
 # Native build tools required for bcrypt postinstall scripts
 RUN apk add --no-cache python3 make g++
