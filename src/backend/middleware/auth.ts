@@ -49,6 +49,7 @@ export function requireAdmin(
   next: NextFunction
 ): void {
   if (!req.user) {
+    res.locals['authOutcome'] = 'no_authenticated_session';
     req.session.flash = {
       ...req.session.flash,
       error: ['Please login to continue.'],

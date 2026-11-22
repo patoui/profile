@@ -32,6 +32,7 @@ export const limitLogin: RequestHandler = async (req, res, next) => {
     await limiter.consume('ip:' + req.ip);
     const email: unknown = req.body?.email;
     if (typeof email !== 'string' || typeof req.body?.password !== 'string') {
+      res.locals['authOutcome'] = 'malformed_credentials';
       res.sendStatus(400);
       return;
     }
@@ -41,6 +42,7 @@ export const limitLogin: RequestHandler = async (req, res, next) => {
     next();
   } catch (error) {
     if (error instanceof RateLimiterRes) {
+      res.locals['authOutcome'] = 'rate_limited';
       res.set('Retry-After', String(Math.ceil(error.msBeforeNext / 1000))).sendStatus(429);
       return;
     }

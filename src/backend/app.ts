@@ -35,10 +35,32 @@ app.set('views', path.join(rootDir, 'src/backend/views'));
 app.locals['baseUrl'] = process.env['BASE_URL'] || 'http://localhost:3000';
 app.locals['asset'] = asset;
 
+// Observe the completed response, after express-session has decided whether to issue a cookie.
+app.use((req, res, next) => {
+  const login = req.method === 'POST' && req.path === '/login';
+  const dashboard = req.method === 'GET' && req.path === '/admin/dashboard';
+  if (login || dashboard) {
+    res.once('finish', () => {
+      if (dashboard && res.statusCode === 200) return;
+      const cookies = res.getHeader('set-cookie') ?? [];
+      console.info(JSON.stringify({
+        event: login ? 'profile.login' : 'profile.dashboard',
+        outcome: res.locals['authOutcome'] ?? 'request_completed',
+        status: res.statusCode,
+        secureRequest: req.secure,
+        sessionCookieReceived: /(?:^|;\s*)connect\.sid=/.test(req.headers.cookie ?? ''),
+        sessionCookieIssued: [cookies].flat().some(cookie => String(cookie).startsWith('connect.sid=')),
+      }));
+    });
+  }
+  next();
+});
+
 // Browser form mutations must originate from the configured public origin.
 const publicOrigin = new URL(app.locals['baseUrl']).origin;
 app.use((req, res, next) => {
   if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) && req.get('origin') !== publicOrigin) {
+    res.locals['authOutcome'] = 'origin_rejected';
     res.sendStatus(403);
     return;
   }

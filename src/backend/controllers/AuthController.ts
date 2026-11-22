@@ -26,6 +26,7 @@ export class AuthController {
     if (!password) errors['password'] = 'Password is required';
 
     if (Object.keys(errors).length > 0) {
+      res.locals['authOutcome'] = 'missing_credentials';
       res.render('auth/login', {
         title: 'Login',
         errors,
@@ -41,6 +42,7 @@ export class AuthController {
     });
 
     if (!user) {
+      res.locals['authOutcome'] = 'invalid_credentials';
       res.render('auth/login', {
         title: 'Login',
         errors: { email: 'Invalid credentials' },
@@ -57,6 +59,7 @@ export class AuthController {
     // Older installations may still have the administrator created by the sample seed.
     const retiredAdminPassword = user.email === ADMIN_EMAIL && password === 'password';
     if (!validPassword || retiredAdminPassword) {
+      res.locals['authOutcome'] = 'invalid_credentials';
       res.render('auth/login', {
         title: 'Login',
         errors: { email: 'Invalid credentials' },
@@ -68,6 +71,7 @@ export class AuthController {
 
     // Create session
     req.session.userId = user.id;
+    res.locals['authOutcome'] = 'credentials_accepted';
 
     // Redirect based on role
     if (user.email === ADMIN_EMAIL) {
