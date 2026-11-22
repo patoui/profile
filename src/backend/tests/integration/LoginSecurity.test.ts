@@ -1,7 +1,7 @@
 import type { AddressInfo } from 'node:net';
 import type { Server } from 'node:http';
 import { once } from 'node:events';
-import { beforeAll, afterAll, expect, it } from 'vitest';
+import { beforeAll, afterAll, expect, it, vi } from 'vitest';
 import app from '../../app.js';
 import bcrypt from 'bcrypt';
 import { testPrisma, useTestDatabase } from './setup.js';
@@ -61,5 +61,39 @@ it('changes publication only through same-origin writes with an explicit target 
     expect(response.status).toBe(302);
     const stored = await testPrisma.post.findUnique({ where: { id: post.id } });
     expect(Boolean(stored?.publishedAt)).toBe(publication === 'publish');
+  }
+});
+
+it.skipIf(!process.env['REDIS_HOST'])('shares login and logout across app instances', async () => {
+  const password = 'a synthetic test password';
+  const email = 'admin@test.com';
+  await testPrisma.user.create({ data: {
+    name: 'Replica test', email, password: await bcrypt.hash(password, 4),
+  } });
+
+  vi.resetModules();
+  const { default: secondApp } = await import('../../app.js');
+  expect(secondApp).not.toBe(app);
+  const secondServer = secondApp.listen(0, '127.0.0.1');
+  try {
+    await once(secondServer, 'listening');
+    const secondBase = 'http://127.0.0.1:' + (secondServer.address() as AddressInfo).port;
+    const login = await fetch(base + '/login', {
+      method: 'POST', headers: { Origin: 'http://localhost:3000' }, redirect: 'manual',
+      body: new URLSearchParams({ email, password }),
+    });
+    expect(login.headers.get('location')).toBe('/admin/dashboard');
+    const cookie = login.headers.getSetCookie()[0]!.split(';')[0]!;
+    const headers = { Cookie: cookie, Origin: 'http://localhost:3000' };
+    const dashboard = await fetch(secondBase + '/admin/dashboard', { headers, redirect: 'manual' });
+    expect(dashboard.status).toBe(200);
+    const logout = await fetch(secondBase + '/logout', { method: 'POST', headers, redirect: 'manual' });
+    expect(logout.status).toBe(302);
+    const afterLogout = await fetch(base + '/admin/dashboard', { headers, redirect: 'manual' });
+    expect(afterLogout.headers.get('location')).toBe('/login');
+  } finally {
+    await new Promise<void>((resolve, reject) => {
+      secondServer.close(error => error ? reject(error) : resolve());
+    });
   }
 });
