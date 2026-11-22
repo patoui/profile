@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
+import { RedisStore } from 'connect-redis';
+import { createClient } from 'redis';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -75,10 +77,29 @@ app.use(cookieParser());
 // Static files
 app.use(express.static(path.join(rootDir, 'public')));
 
-// Session configuration
+// Local development can run without a Redis server.
+const redisHost = process.env['REDIS_HOST'];
+if (!redisHost && process.env['NODE_ENV'] === 'production') {
+  throw new Error('REDIS_HOST is required for production sessions');
+}
+let sessionStore: RedisStore | undefined;
+if (redisHost) {
+  const username = process.env['REDIS_USERNAME'];
+  const password = process.env['REDIS_PASSWORD'];
+  if (!username || !password) throw new Error('Redis session credentials are required');
+  const client = createClient({
+    socket: { host: redisHost, port: Number(process.env['REDIS_PORT'] || 6379) },
+    username, password,
+  });
+  client.on('error', (error: Error) => console.error('Session Redis error:', error.message));
+  await client.connect();
+  sessionStore = new RedisStore({ client, prefix: (process.env['REDIS_PREFIX'] || 'profile:') + 'session:' });
+}
+
 app.use(
   session({
     secret: process.env['SESSION_SECRET'] || 'default-secret-change-me',
+    ...(sessionStore && { store: sessionStore }),
     resave: false,
     saveUninitialized: false,
     cookie: {
