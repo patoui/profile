@@ -7,7 +7,7 @@ vi.mock('../../../../repositories/index.js', () => ({
     findById: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
-    togglePublish: vi.fn(),
+    setPublished: vi.fn(),
     delete: vi.fn(),
   },
 }));
@@ -157,12 +157,13 @@ describe('AdminVideoController', () => {
   describe('togglePublish', () => {
     it('toggles publish status', async () => {
       req.params = { id: '1' };
+      req.body = { publication: 'publish' };
       vi.mocked(videoRepository.findById).mockResolvedValue({ id: 1, publishedAt: null } as any);
-      vi.mocked(videoRepository.togglePublish).mockResolvedValue({ id: 1 } as any);
+      vi.mocked(videoRepository.setPublished).mockResolvedValue({ id: 1 } as any);
 
       await controller.togglePublish(req as any, res as any);
 
-      expect(videoRepository.togglePublish).toHaveBeenCalledWith(1);
+      expect(videoRepository.setPublished).toHaveBeenCalledWith(1, true);
       expect(res.redirect).toHaveBeenCalledWith('/admin/videos');
     });
   });

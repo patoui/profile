@@ -69,7 +69,7 @@ describe('TipRepository Integration', () => {
     });
   });
 
-  describe('togglePublish', () => {
+  describe('setPublished', () => {
     it('toggles publish status', async () => {
       const created = await repository.create({
         title: 'Draft Tip',
@@ -79,7 +79,7 @@ describe('TipRepository Integration', () => {
 
       expect(created.publishedAt).toBeNull();
 
-      const toggled = await repository.togglePublish(created.id);
+      const toggled = await repository.setPublished(created.id, true);
       expect(toggled.publishedAt).not.toBeNull();
     });
   });
@@ -112,7 +112,7 @@ describe('TipRepository Integration', () => {
         body: 'Content',
         tags: [],
       });
-      await repository.togglePublish(published.id);
+      await repository.setPublished(published.id, true);
 
       const publishedTips = await repository.findPublished();
       expect(publishedTips).toHaveLength(1);
@@ -125,7 +125,7 @@ describe('TipRepository Integration', () => {
       await repository.create({ title: 'Draft', body: 'Content', tags: [] });
 
       const pub = await repository.create({ title: 'Published', body: 'Content', tags: [] });
-      await repository.togglePublish(pub.id);
+      await repository.setPublished(pub.id, true);
 
       expect(await repository.countAll()).toBe(2);
       expect(await repository.countPublished()).toBe(1);

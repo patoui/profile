@@ -75,7 +75,7 @@ describe('VideoRepository Integration', () => {
     });
   });
 
-  describe('togglePublish', () => {
+  describe('setPublished', () => {
     it('toggles publish status', async () => {
       const created = await repository.create({
         title: 'Draft Video',
@@ -86,7 +86,7 @@ describe('VideoRepository Integration', () => {
 
       expect(created.publishedAt).toBeNull();
 
-      const toggled = await repository.togglePublish(created.id);
+      const toggled = await repository.setPublished(created.id, true);
       expect(toggled.publishedAt).not.toBeNull();
     });
   });
@@ -122,7 +122,7 @@ describe('VideoRepository Integration', () => {
         externalId: 'xyz',
         tags: [],
       });
-      await repository.togglePublish(published.id);
+      await repository.setPublished(published.id, true);
 
       const publishedVideos = await repository.findPublished();
       expect(publishedVideos).toHaveLength(1);
@@ -136,7 +136,7 @@ describe('VideoRepository Integration', () => {
         externalId: 'abc',
         tags: ['tutorial'],
       });
-      await repository.togglePublish(video1.id);
+      await repository.setPublished(video1.id, true);
 
       const video2 = await repository.create({
         title: 'Video 2',
@@ -144,7 +144,7 @@ describe('VideoRepository Integration', () => {
         externalId: 'xyz',
         tags: ['review'],
       });
-      await repository.togglePublish(video2.id);
+      await repository.setPublished(video2.id, true);
 
       const tutorials = await repository.findPublished('tutorial');
       expect(tutorials).toHaveLength(1);
@@ -157,7 +157,7 @@ describe('VideoRepository Integration', () => {
       await repository.create({ title: 'Draft', description: 'D', externalId: 'a', tags: [] });
 
       const pub = await repository.create({ title: 'Published', description: 'D', externalId: 'b', tags: [] });
-      await repository.togglePublish(pub.id);
+      await repository.setPublished(pub.id, true);
 
       expect(await repository.countAll()).toBe(2);
       expect(await repository.countPublished()).toBe(1);

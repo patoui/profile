@@ -1,22 +1,6 @@
-import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma.js";
 
 async function main() {
-  const hashedPassword = await bcrypt.hash("password", 10);
-
-  const adminUser = await prisma.user.upsert({
-    where: { email: "patrique.ouimet@gmail.com" },
-    update: {},
-    create: {
-      name: "Patrique Ouimet",
-      email: "patrique.ouimet@gmail.com",
-      password: hashedPassword,
-      emailVerifiedAt: new Date(),
-    },
-  });
-
-  console.log("Created admin user:", adminUser.email);
-
   const samplePost = await prisma.post.upsert({
     where: { slug: "welcome-to-my-blog" },
     update: {},

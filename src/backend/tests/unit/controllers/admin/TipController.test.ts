@@ -7,7 +7,7 @@ vi.mock('../../../../repositories/index.js', () => ({
     findById: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
-    togglePublish: vi.fn(),
+    setPublished: vi.fn(),
     delete: vi.fn(),
   },
 }));
@@ -125,12 +125,13 @@ describe('AdminTipController', () => {
   describe('togglePublish', () => {
     it('toggles publish status', async () => {
       req.params = { id: '1' };
+      req.body = { publication: 'publish' };
       vi.mocked(tipRepository.findById).mockResolvedValue({ id: 1, publishedAt: null } as any);
-      vi.mocked(tipRepository.togglePublish).mockResolvedValue({ id: 1 } as any);
+      vi.mocked(tipRepository.setPublished).mockResolvedValue({ id: 1 } as any);
 
       await controller.togglePublish(req as any, res as any);
 
-      expect(tipRepository.togglePublish).toHaveBeenCalledWith(1);
+      expect(tipRepository.setPublished).toHaveBeenCalledWith(1, true);
       expect(res.redirect).toHaveBeenCalledWith('/admin/tips');
     });
   });

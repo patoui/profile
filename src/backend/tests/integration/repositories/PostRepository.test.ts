@@ -89,7 +89,7 @@ describe('PostRepository Integration', () => {
     });
   });
 
-  describe('togglePublish', () => {
+  describe('setPublished', () => {
     it('publishes an unpublished post', async () => {
       const created = await repository.create({
         title: 'Draft Post',
@@ -99,7 +99,7 @@ describe('PostRepository Integration', () => {
 
       expect(created.publishedAt).toBeNull();
 
-      const toggled = await repository.togglePublish(created.id);
+      const toggled = await repository.setPublished(created.id, true);
       expect(toggled.publishedAt).not.toBeNull();
     });
 
@@ -111,9 +111,9 @@ describe('PostRepository Integration', () => {
       });
 
       // First publish
-      await repository.togglePublish(created.id);
+      await repository.setPublished(created.id, true);
       // Then unpublish
-      const toggled = await repository.togglePublish(created.id);
+      const toggled = await repository.setPublished(created.id, false);
       expect(toggled.publishedAt).toBeNull();
     });
   });
@@ -146,7 +146,7 @@ describe('PostRepository Integration', () => {
         body: 'Content',
         tags: [],
       });
-      await repository.togglePublish(published.id);
+      await repository.setPublished(published.id, true);
 
       const publishedPosts = await repository.findPublished();
       expect(publishedPosts).toHaveLength(1);
@@ -159,14 +159,14 @@ describe('PostRepository Integration', () => {
         body: 'Content',
         tags: ['javascript'],
       });
-      await repository.togglePublish(post1.id);
+      await repository.setPublished(post1.id, true);
 
       const post2 = await repository.create({
         title: 'Post 2',
         body: 'Content',
         tags: ['python'],
       });
-      await repository.togglePublish(post2.id);
+      await repository.setPublished(post2.id, true);
 
       const jsPosts = await repository.findPublished('javascript');
       expect(jsPosts).toHaveLength(1);
@@ -179,17 +179,17 @@ describe('PostRepository Integration', () => {
       vi.useFakeTimers();
 
       const post1 = await repository.create({ title: 'First', body: 'Content', tags: [] });
-      await repository.togglePublish(post1.id);
+      await repository.setPublished(post1.id, true);
 
       vi.advanceTimersByTime(1000);
 
       const post2 = await repository.create({ title: 'Second', body: 'Content', tags: [] });
-      await repository.togglePublish(post2.id);
+      await repository.setPublished(post2.id, true);
 
       vi.advanceTimersByTime(1000);
 
       const post3 = await repository.create({ title: 'Third', body: 'Content', tags: [] });
-      await repository.togglePublish(post3.id);
+      await repository.setPublished(post3.id, true);
 
       vi.useRealTimers();
 
@@ -210,7 +210,7 @@ describe('PostRepository Integration', () => {
       await repository.create({ title: 'Draft 2', body: 'Content', tags: [] });
 
       const pub = await repository.create({ title: 'Published', body: 'Content', tags: [] });
-      await repository.togglePublish(pub.id);
+      await repository.setPublished(pub.id, true);
 
       const total = await repository.countAll();
       const published = await repository.countPublished();

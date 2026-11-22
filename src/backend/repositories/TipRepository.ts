@@ -69,14 +69,14 @@ export class TipRepository {
     });
   }
 
-  async togglePublish(id: number): Promise<Tip> {
+  async setPublished(id: number, published: boolean): Promise<Tip> {
     const tip = await prisma.tip.findUnique({ where: { id } });
     if (!tip) throw new Error('Tip not found');
 
     return prisma.tip.update({
       where: { id },
       data: {
-        publishedAt: tip.publishedAt ? null : new Date(),
+        publishedAt: published ? (tip.publishedAt ?? new Date()) : null,
       },
     });
   }

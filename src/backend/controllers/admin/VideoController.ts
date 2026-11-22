@@ -146,9 +146,14 @@ export class AdminVideoController {
       return;
     }
 
-    await videoRepository.togglePublish(id);
+    const action = req.body?.publication;
+    if (action !== 'publish' && action !== 'unpublish') {
+      res.sendStatus(400);
+      return;
+    }
+    await videoRepository.setPublished(id, action === 'publish');
 
-    const status = video.publishedAt ? 'unpublished' : 'published';
+    const status = action === 'publish' ? 'published' : 'unpublished';
     req.session.flash = { success: [`Video ${status} successfully`] };
     res.redirect('/admin/videos');
   }

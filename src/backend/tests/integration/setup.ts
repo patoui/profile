@@ -66,7 +66,7 @@ const createTableStatements = [
 
 export async function setupTestDatabase() {
   await pool.query(`
-    DROP TABLE IF EXISTS analytics, videos, tips, posts, users CASCADE
+    DROP TABLE IF EXISTS login_attempts, analytics, videos, tips, posts, users CASCADE
   `);
 
   for (const sql of createTableStatements) {

@@ -19,7 +19,7 @@
     "db:seed": "node --import tsx ./scripts/seed.ts",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:run:unit": "vitest run tests/unit",
+    "test:run:unit": "vitest run --exclude 'dist/**' tests/unit",
     "test:run:integration": "vitest run --config vitest.integration.config.ts",
     "test:coverage": "vitest run --coverage",
     "test:coverage:unit": "vitest run tests/unit --coverage",
@@ -36,6 +36,7 @@
     "feed": "^4.2.2",
     "marked": "^15.0.3",
     "pg": "^8.16.3",
+    "rate-limiter-flexible": "^11.5.0",
     "temporal-polyfill": "1.0.4"
   },
   "devDependencies": {

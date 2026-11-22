@@ -7,7 +7,7 @@ vi.mock('../../../../repositories/index.js', () => ({
     findById: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
-    togglePublish: vi.fn(),
+    setPublished: vi.fn(),
     delete: vi.fn(),
   },
 }));
@@ -189,19 +189,21 @@ describe('AdminPostController', () => {
   describe('togglePublish', () => {
     it('toggles publish status and redirects', async () => {
       req.params = { id: '1' };
+      req.body = { publication: 'publish' };
       vi.mocked(postRepository.findById).mockResolvedValue({ id: 1, publishedAt: null } as any);
-      vi.mocked(postRepository.togglePublish).mockResolvedValue({ id: 1, publishedAt: new Date() } as any);
+      vi.mocked(postRepository.setPublished).mockResolvedValue({ id: 1, publishedAt: new Date() } as any);
 
       await controller.togglePublish(req as any, res as any);
 
-      expect(postRepository.togglePublish).toHaveBeenCalledWith(1);
+      expect(postRepository.setPublished).toHaveBeenCalledWith(1, true);
       expect(res.redirect).toHaveBeenCalledWith('/admin/posts');
     });
 
     it('shows correct flash message when publishing', async () => {
       req.params = { id: '1' };
+      req.body = { publication: 'publish' };
       vi.mocked(postRepository.findById).mockResolvedValue({ id: 1, publishedAt: null } as any);
-      vi.mocked(postRepository.togglePublish).mockResolvedValue({ id: 1 } as any);
+      vi.mocked(postRepository.setPublished).mockResolvedValue({ id: 1 } as any);
 
       await controller.togglePublish(req as any, res as any);
 
@@ -210,8 +212,9 @@ describe('AdminPostController', () => {
 
     it('shows correct flash message when unpublishing', async () => {
       req.params = { id: '1' };
+      req.body = { publication: 'unpublish' };
       vi.mocked(postRepository.findById).mockResolvedValue({ id: 1, publishedAt: new Date() } as any);
-      vi.mocked(postRepository.togglePublish).mockResolvedValue({ id: 1 } as any);
+      vi.mocked(postRepository.setPublished).mockResolvedValue({ id: 1 } as any);
 
       await controller.togglePublish(req as any, res as any);
 

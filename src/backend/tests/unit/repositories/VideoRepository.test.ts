@@ -143,13 +143,13 @@ describe('VideoRepository', () => {
     });
   });
 
-  describe('togglePublish', () => {
+  describe('setPublished', () => {
     it('publishes an unpublished video', async () => {
       const mockVideo = { id: 1, publishedAt: null };
       vi.mocked(prisma.video.findUnique).mockResolvedValue(mockVideo as any);
       vi.mocked(prisma.video.update).mockResolvedValue({ ...mockVideo, publishedAt: new Date() } as any);
 
-      await repository.togglePublish(1);
+      await repository.setPublished(1, true);
 
       expect(prisma.video.update).toHaveBeenCalledWith({
         where: { id: 1 },
@@ -160,7 +160,7 @@ describe('VideoRepository', () => {
     it('throws when video not found', async () => {
       vi.mocked(prisma.video.findUnique).mockResolvedValue(null);
 
-      await expect(repository.togglePublish(999)).rejects.toThrow('Video not found');
+      await expect(repository.setPublished(999, true)).rejects.toThrow('Video not found');
     });
   });
 

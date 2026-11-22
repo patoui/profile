@@ -23,12 +23,27 @@ const rootDir = isRunningFromDist
 
 const app = express();
 
+// Only the ingress subnet may supply forwarded client and TLS information.
+if (process.env['TRUSTED_PROXY_CIDRS']) {
+  app.set('trust proxy', process.env['TRUSTED_PROXY_CIDRS'].split(','));
+}
+
 // View engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(rootDir, 'src/backend/views'));
 
 app.locals['baseUrl'] = process.env['BASE_URL'] || 'http://localhost:3000';
 app.locals['asset'] = asset;
+
+// Browser form mutations must originate from the configured public origin.
+const publicOrigin = new URL(app.locals['baseUrl']).origin;
+app.use((req, res, next) => {
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) && req.get('origin') !== publicOrigin) {
+    res.sendStatus(403);
+    return;
+  }
+  next();
+});
 
 // Middleware
 app.use(express.json());

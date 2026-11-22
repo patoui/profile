@@ -127,13 +127,13 @@ describe('TipRepository', () => {
     });
   });
 
-  describe('togglePublish', () => {
+  describe('setPublished', () => {
     it('publishes an unpublished tip', async () => {
       const mockTip = { id: 1, publishedAt: null };
       vi.mocked(prisma.tip.findUnique).mockResolvedValue(mockTip as any);
       vi.mocked(prisma.tip.update).mockResolvedValue({ ...mockTip, publishedAt: new Date() } as any);
 
-      await repository.togglePublish(1);
+      await repository.setPublished(1, true);
 
       expect(prisma.tip.update).toHaveBeenCalledWith({
         where: { id: 1 },
@@ -144,7 +144,7 @@ describe('TipRepository', () => {
     it('throws when tip not found', async () => {
       vi.mocked(prisma.tip.findUnique).mockResolvedValue(null);
 
-      await expect(repository.togglePublish(999)).rejects.toThrow('Tip not found');
+      await expect(repository.setPublished(999, true)).rejects.toThrow('Tip not found');
     });
   });
 

@@ -102,13 +102,24 @@ describe('AuthController', () => {
 
     it('redirects to admin dashboard for admin user', async () => {
       const mockUser = { id: 1, email: 'admin@test.com', password: '$2a$10$hash' };
-      req.body = { email: 'admin@test.com', password: 'password' };
+      req.body = { email: 'admin@test.com', password: 'a replacement passphrase' };
       vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser as any);
       vi.mocked(bcrypt.compare).mockResolvedValue(true as never);
 
       await controller.login(req as any, res as any);
 
       expect(res.redirect).toHaveBeenCalledWith('/admin/dashboard');
+    });
+
+    it('denies the retired seed credential even when the stored admin hash matches', async () => {
+      req.body = { email: 'admin@test.com', password: 'password' };
+      vi.mocked(prisma.user.findUnique).mockResolvedValue({ id: 1, email: 'admin@test.com', password: 'hash' } as any);
+      vi.mocked(bcrypt.compare).mockResolvedValue(true as never);
+      await controller.login(req as any, res as any);
+      expect(req.session.userId).toBeUndefined();
+      expect(res.render).toHaveBeenCalledWith('auth/login', expect.objectContaining({
+        errors: { email: 'Invalid credentials' },
+      }));
     });
 
     it('handles PHP bcrypt prefix conversion', async () => {

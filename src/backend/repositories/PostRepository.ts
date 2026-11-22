@@ -69,14 +69,14 @@ export class PostRepository {
     });
   }
 
-  async togglePublish(id: number): Promise<Post> {
+  async setPublished(id: number, published: boolean): Promise<Post> {
     const post = await prisma.post.findUnique({ where: { id } });
     if (!post) throw new Error('Post not found');
 
     return prisma.post.update({
       where: { id },
       data: {
-        publishedAt: post.publishedAt ? null : new Date(),
+        publishedAt: published ? (post.publishedAt ?? new Date()) : null,
       },
     });
   }

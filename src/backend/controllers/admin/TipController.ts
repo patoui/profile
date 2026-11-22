@@ -138,9 +138,14 @@ export class AdminTipController {
       return;
     }
 
-    await tipRepository.togglePublish(id);
+    const action = req.body?.publication;
+    if (action !== 'publish' && action !== 'unpublish') {
+      res.sendStatus(400);
+      return;
+    }
+    await tipRepository.setPublished(id, action === 'publish');
 
-    const status = tip.publishedAt ? 'unpublished' : 'published';
+    const status = action === 'publish' ? 'published' : 'unpublished';
     req.session.flash = { success: [`Tip ${status} successfully`] };
     res.redirect('/admin/tips');
   }

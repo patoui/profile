@@ -76,14 +76,14 @@ export class VideoRepository {
     });
   }
 
-  async togglePublish(id: number): Promise<Video> {
+  async setPublished(id: number, published: boolean): Promise<Video> {
     const video = await prisma.video.findUnique({ where: { id } });
     if (!video) throw new Error('Video not found');
 
     return prisma.video.update({
       where: { id },
       data: {
-        publishedAt: video.publishedAt ? null : new Date(),
+        publishedAt: published ? (video.publishedAt ?? new Date()) : null,
       },
     });
   }

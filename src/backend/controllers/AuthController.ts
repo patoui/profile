@@ -54,7 +54,9 @@ export class AuthController {
     // Convert PHP's $2y$ bcrypt prefix to Node.js compatible $2a$ prefix
     const compatibleHash = user.password.replace(/^\$2y\$/, '$2a$');
     const validPassword = await bcrypt.compare(password!, compatibleHash);
-    if (!validPassword) {
+    // Older installations may still have the administrator created by the sample seed.
+    const retiredAdminPassword = user.email === ADMIN_EMAIL && password === 'password';
+    if (!validPassword || retiredAdminPassword) {
       res.render('auth/login', {
         title: 'Login',
         errors: { email: 'Invalid credentials' },

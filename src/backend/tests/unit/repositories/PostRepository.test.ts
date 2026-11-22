@@ -182,13 +182,13 @@ describe('PostRepository', () => {
     });
   });
 
-  describe('togglePublish', () => {
+  describe('setPublished', () => {
     it('publishes an unpublished post', async () => {
       const mockPost = { id: 1, publishedAt: null };
       vi.mocked(prisma.post.findUnique).mockResolvedValue(mockPost as any);
       vi.mocked(prisma.post.update).mockResolvedValue({ ...mockPost, publishedAt: new Date() } as any);
 
-      await repository.togglePublish(1);
+      await repository.setPublished(1, true);
 
       expect(prisma.post.update).toHaveBeenCalledWith({
         where: { id: 1 },
@@ -201,7 +201,7 @@ describe('PostRepository', () => {
       vi.mocked(prisma.post.findUnique).mockResolvedValue(mockPost as any);
       vi.mocked(prisma.post.update).mockResolvedValue({ ...mockPost, publishedAt: null } as any);
 
-      await repository.togglePublish(1);
+      await repository.setPublished(1, false);
 
       expect(prisma.post.update).toHaveBeenCalledWith({
         where: { id: 1 },
@@ -212,7 +212,7 @@ describe('PostRepository', () => {
     it('throws when post not found', async () => {
       vi.mocked(prisma.post.findUnique).mockResolvedValue(null);
 
-      await expect(repository.togglePublish(999)).rejects.toThrow('Post not found');
+      await expect(repository.setPublished(999, true)).rejects.toThrow('Post not found');
     });
   });
 

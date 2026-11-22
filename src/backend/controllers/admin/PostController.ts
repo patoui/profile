@@ -162,9 +162,14 @@ export class AdminPostController {
       return;
     }
 
-    await postRepository.togglePublish(id);
+    const action = req.body?.publication;
+    if (action !== 'publish' && action !== 'unpublish') {
+      res.sendStatus(400);
+      return;
+    }
+    await postRepository.setPublished(id, action === 'publish');
 
-    const status = post.publishedAt ? 'unpublished' : 'published';
+    const status = action === 'publish' ? 'published' : 'unpublished';
     req.session.flash = { success: [`Post ${status} successfully`] };
     res.redirect('/admin/posts');
   }
