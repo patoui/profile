@@ -96,6 +96,8 @@ describe('AuthController', () => {
 
       await controller.login(req as any, res as any);
 
+      expect(req.session.regenerate).toHaveBeenCalledOnce();
+      expect(req.session.save).toHaveBeenCalledOnce();
       expect(req.session.userId).toBe(1);
       expect(res.redirect).toHaveBeenCalledWith('/');
     });

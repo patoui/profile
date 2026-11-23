@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { randomBytes } from 'node:crypto';
 import express from 'express';
 import session from 'express-session';
 import { RedisStore } from 'connect-redis';
@@ -77,6 +78,11 @@ app.use(cookieParser());
 // Static files
 app.use(express.static(path.join(rootDir, 'public')));
 
+const sessionSecret = process.env['SESSION_SECRET'];
+if (process.env['NODE_ENV'] === 'production' && Buffer.byteLength(sessionSecret?.trim() ?? '') < 32) {
+  throw new Error('SESSION_SECRET must contain at least 32 bytes in production');
+}
+
 // Local development can run without a Redis server.
 const redisHost = process.env['REDIS_HOST'];
 if (!redisHost && process.env['NODE_ENV'] === 'production') {
@@ -98,7 +104,7 @@ if (redisHost) {
 
 app.use(
   session({
-    secret: process.env['SESSION_SECRET'] || 'default-secret-change-me',
+    secret: sessionSecret || randomBytes(32).toString('hex'),
     ...(sessionStore && { store: sessionStore }),
     resave: false,
     saveUninitialized: false,

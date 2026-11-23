@@ -69,8 +69,13 @@ export class AuthController {
       return;
     }
 
-    // Create session
+    await new Promise<void>((resolve, reject) => {
+      req.session.regenerate(error => error ? reject(error) : resolve());
+    });
     req.session.userId = user.id;
+    await new Promise<void>((resolve, reject) => {
+      req.session.save(error => error ? reject(error) : resolve());
+    });
     res.locals['authOutcome'] = 'credentials_accepted';
 
     // Redirect based on role

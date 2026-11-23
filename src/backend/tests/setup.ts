@@ -13,6 +13,8 @@ export const createMockRequest = (overrides = {}) => ({
   session: {
     userId: undefined as number | undefined,
     flash: undefined as any,
+    regenerate: vi.fn((cb) => cb()),
+    save: vi.fn((cb) => cb()),
     destroy: vi.fn((cb) => cb()),
   },
   user: undefined as any,
