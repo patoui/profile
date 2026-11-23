@@ -60,7 +60,7 @@ export class AdminTipController {
     res.redirect('/admin/tips');
   }
 
-  async edit(req: Request, res: Response): Promise<void> {
+  async edit(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Tip not found' });
       return;
@@ -83,7 +83,7 @@ export class AdminTipController {
     });
   }
 
-  async update(req: Request, res: Response): Promise<void> {
+  async update(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Tip not found' });
       return;
@@ -124,7 +124,7 @@ export class AdminTipController {
     res.redirect('/admin/tips');
   }
 
-  async togglePublish(req: Request, res: Response): Promise<void> {
+  async togglePublish(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Tip not found' });
       return;
@@ -150,7 +150,7 @@ export class AdminTipController {
     res.redirect('/admin/tips');
   }
 
-  async destroy(req: Request, res: Response): Promise<void> {
+  async destroy(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Tip not found' });
       return;

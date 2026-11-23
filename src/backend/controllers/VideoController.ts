@@ -38,7 +38,7 @@ export class VideoController {
     });
   }
 
-  async show(req: Request, res: Response): Promise<void> {
+  async show(req: Request<{ slug: string }>, res: Response): Promise<void> {
     if (!req.params['slug']) {
       res.status(404).render('errors/404', { message: 'Video not found' });
       return;

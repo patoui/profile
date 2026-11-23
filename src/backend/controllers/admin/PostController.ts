@@ -80,7 +80,7 @@ export class AdminPostController {
     res.redirect('/admin/posts');
   }
 
-  async edit(req: Request, res: Response): Promise<void> {
+  async edit(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Post not found' });
       return;
@@ -105,7 +105,7 @@ export class AdminPostController {
     });
   }
 
-  async update(req: Request, res: Response): Promise<void> {
+  async update(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Post not found' });
       return;
@@ -148,7 +148,7 @@ export class AdminPostController {
     res.redirect('/admin/posts');
   }
 
-  async togglePublish(req: Request, res: Response): Promise<void> {
+  async togglePublish(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Post not found' });
       return;
@@ -174,7 +174,7 @@ export class AdminPostController {
     res.redirect('/admin/posts');
   }
 
-  async destroy(req: Request, res: Response): Promise<void> {
+  async destroy(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Post not found' });
       return;

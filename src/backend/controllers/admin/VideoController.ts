@@ -64,7 +64,7 @@ export class AdminVideoController {
     res.redirect('/admin/videos');
   }
 
-  async edit(req: Request, res: Response): Promise<void> {
+  async edit(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Video not found' });
       return;
@@ -87,7 +87,7 @@ export class AdminVideoController {
     });
   }
 
-  async update(req: Request, res: Response): Promise<void> {
+  async update(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Video not found' });
       return;
@@ -132,7 +132,7 @@ export class AdminVideoController {
     res.redirect('/admin/videos');
   }
 
-  async togglePublish(req: Request, res: Response): Promise<void> {
+  async togglePublish(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Video not found' });
       return;
@@ -158,7 +158,7 @@ export class AdminVideoController {
     res.redirect('/admin/videos');
   }
 
-  async destroy(req: Request, res: Response): Promise<void> {
+  async destroy(req: Request<{ id: string }>, res: Response): Promise<void> {
     if (!req.params['id']) {
       res.status(404).render('errors/404', { message: 'Video not found' });
       return;

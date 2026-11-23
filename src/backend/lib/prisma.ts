@@ -1,7 +1,8 @@
-import "temporal-polyfill/full/global";
 import dotenv from "dotenv";
 import { fileURLToPath } from "node:url";
 import postgres from "@prisma/orm-postgres/runtime";
+import { contractFromJson } from "@prisma/orm-postgres/static";
+import type { Contract } from "../../../prisma/contract.d.js";
 import contractJson from "../../../prisma/contract.json" with { type: "json" };
 import type {
   Analytic,
@@ -10,14 +11,6 @@ import type {
   User,
   Video,
 } from "../types/prisma.js";
-
-const temporalGlobal = globalThis as typeof globalThis & {
-  Temporal: {
-    Instant: {
-      from(value: string): { epochMilliseconds: number };
-    };
-  };
-};
 
 dotenv.config({
   path: fileURLToPath(new URL("../../../.env", import.meta.url)),
@@ -31,7 +24,7 @@ if (!connectionString) {
 }
 
 const db = postgres({
-  contractJson,
+  contract: contractFromJson<Contract>(contractJson),
   url: connectionString,
 });
 
@@ -69,51 +62,6 @@ type QueryModel = QueryNode & {
   }): Promise<unknown>;
 };
 
-function toTemporalInstant(value: unknown): unknown {
-  if (value instanceof Date) {
-    return temporalGlobal.Temporal.Instant.from(value.toISOString());
-  }
-
-  return value;
-}
-
-function fromTemporalInstant(value: unknown): unknown {
-  if (
-    value &&
-    typeof value === "object" &&
-    "epochMilliseconds" in value &&
-    typeof (value as { epochMilliseconds: unknown }).epochMilliseconds === "number"
-  ) {
-    return new Date((value as { epochMilliseconds: number }).epochMilliseconds);
-  }
-
-  if (Array.isArray(value)) {
-    return value.map(fromTemporalInstant);
-  }
-
-  if (value && typeof value === "object") {
-    if (Object.getPrototypeOf(value) !== Object.prototype) {
-      return value;
-    }
-
-    return Object.fromEntries(
-      Object.entries(value).map(([key, entry]) => [key, fromTemporalInstant(entry)])
-    );
-  }
-
-  return value;
-}
-
-function normalizeData(data: Record<string, unknown>) {
-  return Object.fromEntries(
-    Object.entries(data).map(([key, value]) => [key, toTemporalInstant(value)])
-  );
-}
-
-function normalizeResult<T>(value: unknown): T {
-  return fromTemporalInstant(value) as T;
-}
-
 function applyWhere<T extends QueryNode>(query: T, where?: WhereInput): T {
   if (!where) {
     return query;
@@ -122,14 +70,14 @@ function applyWhere<T extends QueryNode>(query: T, where?: WhereInput): T {
   for (const [key, value] of Object.entries(where)) {
     if (Array.isArray(value)) {
       query = query.where((fields: QueryFields) =>
-        fields[key]!.in(value.map(toTemporalInstant))
+        fields[key]!.in(value)
       ) as T;
       continue;
     }
 
     if (value instanceof Date || typeof value !== "object" || value === null) {
       query = query.where((fields: QueryFields) =>
-        fields[key]!.eq(toTemporalInstant(value))
+        fields[key]!.eq(value)
       ) as T;
       continue;
     }
@@ -139,25 +87,24 @@ function applyWhere<T extends QueryNode>(query: T, where?: WhereInput): T {
     )) {
       query = query.where((fields: QueryFields) => {
         const field = fields[key]!;
-        const normalized = toTemporalInstant(operand);
 
         switch (operator) {
           case "not":
-            return operand === null ? field.isNotNull() : field.neq(normalized);
+            return operand === null ? field.isNotNull() : field.neq(operand);
           case "lte":
-            return field.lte(normalized);
+            return field.lte(operand);
           case "lt":
-            return field.lt(normalized);
+            return field.lt(operand);
           case "gte":
-            return field.gte(normalized);
+            return field.gte(operand);
           case "gt":
-            return field.gt(normalized);
+            return field.gt(operand);
           case "in":
-            return field.in((operand as unknown[]).map(toTemporalInstant));
+            return field.in(operand as unknown[]);
           case "notIn":
-            return field.notIn((operand as unknown[]).map(toTemporalInstant));
+            return field.notIn(operand as unknown[]);
           default:
-            return field.eq(normalized);
+            return field.eq(operand);
         }
       }) as T;
     }
@@ -224,11 +171,11 @@ function createModel<T>(model: unknown): ModelClient<T> {
       if (orderBy) {
         query = query.orderBy(orderBy as unknown) as QueryModel;
       }
-      return query.all().then((rows) => normalizeResult(rows) as T[]);
+      return query.all() as Promise<T[]>;
     },
     findUnique(args: { where: WhereInput }): Promise<T | null> {
       const query = applyWhere(typedModel, args.where);
-      return query.all().then((rows) => normalizeResult<T | null>(rows[0] ?? null));
+      return query.all().then((rows) => (rows[0] as T | undefined) ?? null);
     },
     findFirst(
       args: { where?: WhereInput; orderBy?: OrderByInput; select?: unknown } = {}
@@ -239,17 +186,15 @@ function createModel<T>(model: unknown): ModelClient<T> {
       if (orderBy) {
         query = query.orderBy(orderBy as unknown) as QueryModel;
       }
-      return query.all().then((rows) => normalizeResult<T | null>(rows[0] ?? null));
+      return query.all().then((rows) => (rows[0] as T | undefined) ?? null);
     },
     create(args: { data: Record<string, unknown> }): Promise<T> {
       return typedModel
-        .create(normalizeData(args.data))
-        .then((result) => normalizeResult<T>(result));
+        .create(args.data) as Promise<T>;
     },
     update(args: { where: WhereInput; data: Record<string, unknown> }): Promise<T> {
       return applyWhere(typedModel, args.where)
-        .update(normalizeData(args.data))
-        .then((result) => normalizeResult<T>(result));
+        .update(args.data) as Promise<T>;
     },
     delete(args: { where: WhereInput }): Promise<void> {
       return applyWhere(typedModel, args.where).delete().then(() => undefined);
@@ -265,10 +210,10 @@ function createModel<T>(model: unknown): ModelClient<T> {
       create: Record<string, unknown>;
     }): Promise<T> {
       return typedModel.upsert({
-        create: normalizeData(args.create),
-        update: normalizeData(args.update),
+        create: args.create,
+        update: args.update,
         conflictOn: args.where,
-      }).then((result) => normalizeResult<T>(result));
+      }) as Promise<T>;
     },
   };
 }

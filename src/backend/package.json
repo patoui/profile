@@ -26,8 +26,8 @@
     "test:coverage:integration": "vitest run --config vitest.integration.config.ts --coverage"
   },
   "dependencies": {
-    "@prisma/orm-postgres": "8.0.0-rc.8",
-    "bcrypt": "^5.1.1",
+    "@prisma/orm-postgres": "8.0.0-rc.24",
+    "bcrypt": "^6.0.0",
     "connect-redis": "^9.0.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.6.1",
@@ -38,8 +38,7 @@
     "marked": "^15.0.3",
     "pg": "^8.16.3",
     "rate-limiter-flexible": "^11.5.0",
-    "redis": "^5.12.4",
-    "temporal-polyfill": "1.0.4"
+    "redis": "^5.12.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -49,13 +48,13 @@
     "@types/express-session": "^1.18.0",
     "@types/node": "^22.19.1",
     "@types/pg": "^8.15.5",
-    "@vitest/coverage-v8": "5.0.0",
+    "@vitest/coverage-v8": "5.1.1",
     "eslint": "^9.39.1",
     "express-list-routes": "^1.3.1",
-    "prisma": "8.0.0-rc.13",
+    "prisma": "8.0.0-rc.34",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0",
-    "vitest": "5.0.0"
+    "vitest": "5.1.1"
   }
 }
